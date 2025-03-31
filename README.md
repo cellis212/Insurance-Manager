@@ -71,7 +71,7 @@ The game features:
 
 ## Testing
 
-The project includes two testing approaches:
+The project includes multiple testing approaches:
 
 ### R Testing
 
@@ -81,9 +81,37 @@ For R-specific testing, we use testthat:
 Rscript -e "testthat::test_dir('tests/testthat')"
 ```
 
-### Python Selenium Testing
+### Enhanced Selenium Tests
 
-For UI testing, we use Python with Selenium:
+For more robust UI testing, we've implemented enhanced Selenium test suites in both R and Python with improved timeout handling:
+
+**R Version (recommended if you have Java installed):**
+```
+# Using wrapper script (handles cleanup automatically)
+& 'C:\Program Files\R\R-4.4.1\bin\Rscript.exe' tests/run_tests.R
+
+# Or run test directly
+& 'C:\Program Files\R\R-4.4.1\bin\Rscript.exe' tests/enhanced_selenium_tests.R
+```
+
+**Python Version (recommended if you don't have Java):**
+```
+# Using wrapper script (handles cleanup automatically)
+python tests/run_tests.py
+
+# Or run test directly
+python tests/enhanced_python_selenium.py
+```
+
+The enhanced tests include:
+- Automatic timeout handling to prevent tests from getting stuck
+- Smart port detection and app auto-start
+- Improved screenshots and error reporting
+- See `tests/README.md` for more details
+
+### Legacy Selenium Testing
+
+For basic UI testing, we also maintain the original Selenium tests:
 
 1. Activate the Python virtual environment:
    ```
