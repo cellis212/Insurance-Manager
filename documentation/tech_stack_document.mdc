@@ -1,0 +1,90 @@
+---
+description: Apply these rules when making changes to the project
+globs:
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+# Tech Stack Document
+
+This document explains the technology choices made for our Insurance Simulation Game. Our goal is to provide a clear overview of why each technology was chosen and how it contributes to delivering a fun, interactive, and educational experience.
+
+## Frontend Technologies
+
+For the user interface and overall experience, we have selected the following technologies:
+
+- **Shiny**
+  - We are using R's Shiny framework to build a dynamic and responsive web application. Shiny allows for interactive dashboards and a modular code architecture, which is perfect for our multi-tab, inbox-driven layout.
+
+- **Darkly Shiny Theme**
+  - This theme gives the application a Football Manager-inspired dark UI style. It creates a professional and focused environment, making it easier for users—both students and educators—to navigate and engage with the content.
+
+- **Interactive Charts and Tables**
+  - Using Shiny modules, we’re implementing interactive charts and tables that provide real-time performance visualizations and analytics. These visuals give immediate feedback on decisions, enhancing the learning experience.
+
+## Backend Technologies
+
+The backend is the backbone of our simulation, ensuring smooth calculations, game state management, and data persistence:
+
+- **R Language**
+  - The simulation's core logic, including financial models, risk management calculations, and decision processing, is all written in R. This makes it easier to implement complex statistical models and utility functions.
+
+- **Shiny Backend**
+  - Leveraging the reactive nature of Shiny, the backend responds dynamically to user inputs. When players make strategic choices, the R backend processes these inputs and updates the game state as decisions are aggregated each simulated year.
+
+- **File Storage**
+  - Individual player decisions are saved as separate files. This setup allows for later aggregation by the administrator to update the overall game simulation without overwriting individual inputs.
+
+## Infrastructure and Deployment
+
+To ensure the application is accessible, reliable, and scalable, we have chosen the following infrastructure components:
+
+- **shinyapps.io**
+  - Our application is hosted on shinyapps.io. This platform is optimized for Shiny applications and simplifies deployment and scaling, allowing us to manage many users simultaneously.
+
+- **Version Control and CI/CD Tools**
+  - We utilize robust version control systems (integrated with our selected tools) and modern CI/CD pipelines. This means updates and new features can be rolled out quickly and reliably.
+
+- **Developer and AI-Powered Coding Tools**
+  - **Cursor**: An advanced IDE that offers real-time coding suggestions.
+  - **Claude 3.7 Sonnet & Claude 3.5 Sonnet**: These tools assist with intelligent code suggestions and problem solving.
+  - **Gemini 2.5 Pro**: Enhances our ability to handle complex coding challenges.
+
+## Third-Party Integrations
+
+The game includes integrations with several external services that support both development and gameplay functions:
+
+- **Analytics and Visualization Libraries**
+  - Integrated within the Shiny environment, these libraries help generate interactive dashboards for performance metrics such as loss ratios, combined ratios, and other KPIs.
+
+- **AI-Powered Development Tools**
+  - In addition to our primary development tools, integrations with advanced AI models (as mentioned above) help optimize code performance and handle sophisticated simulation logic.
+
+## Security and Performance Considerations
+
+To ensure a secure and fast user experience, we have implemented several measures:
+
+- **Secure User Authentication and Data Protection**
+  - While built into the Shiny framework, standard best practices for authentication and secure data handling are applied. This protects player data and maintains the integrity of the simulation.
+
+- **Reactive Design for Performance**
+  - The reactive programming model in Shiny ensures that only necessary components of the application are refreshed, optimizing performance and making sure the application remains responsive even as multiple users interact simultaneously.
+
+- **Turn-Based Synchronous Multiplayer Mode**
+  - By processing user decisions in batches and aggregating them, we ensure that the system remains stable and performs efficiently even with large numbers of users (up to 200 players) participating in the simulation concurrently.
+
+## Conclusion and Overall Tech Stack Summary
+
+To recap, our tech stack was carefully chosen to meet both the educational and interactive demands of our Insurance Simulation Game:
+
+- **Frontend**: Built with Shiny along with a professional dark theme and interactive visualization tools, ensuring an engaging user interface.
+
+- **Backend**: Powered by R and the reactive capabilities of Shiny, which handle complex simulation models, decision aggregation, and file-based data storage.
+
+- **Infrastructure**: Deployed on shinyapps.io with reliable version control and CI/CD systems. This setup simplifies scaling and management.
+
+- **Third-Party Integrations**: Enhanced by AI tools and advanced IDEs like Cursor, Claude, and Gemini to ensure we maintain code quality and rapid development cycles.
+
+- **Security and Performance**: Ensured by secure authentication measures, efficient reactive updates, and a well-planned turn-based multiplayer system.
+
+This combination of technologies offers a robust, interactive, and secure platform that not only supports the simulation’s intricate features but also provides a learning environment that is both engaging and educational for all users.

@@ -1,0 +1,50 @@
+---
+description: Apply these rules when making changes to the project
+globs:
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+flowchart TD
+    A[Game Start] --> B[Onboarding and Login]
+    B --> C[Executive Profile Setup]
+    C --> D[Main Dashboard]
+    
+    D --> E[CEO Inbox]
+    D --> F[CFO Office]
+    D --> G[CCO Office]
+    D --> H[CAO Office]
+    D --> I[CRO Office]
+    D --> J[Chief Actuary Office]
+    D --> K[Premium and Investment Management]
+    
+    K --> L[Set Strategy via Sliders]
+    L --> M[Investment and Hedging Decisions]
+    M --> N[Asset and Risk Auction]
+    
+    D --> O[Analytics Dashboards]
+    O --> P[Performance Visualization]
+    
+    D --> Q[Notifications and Inbox Events]
+    Q --> R[Employee and External Alerts]
+    
+    D --> S[Turn-Based Multiplayer Decisions]
+    S --> T[Individual Decision Logging]
+    T --> U[Aggregated Year-End Simulation]
+    
+    D --> V[Simulation Engine]
+    V --> W[Demand, Cost and Market Simulation]
+    W --> X[Game State Update]
+    X --> D
+    
+    X --> Y[Financial Reporting]
+    Y --> Z[Loss Ratio and Combined Ratio]
+    
+    A --> AA[Admin Interface]
+    AA --> AB[Simulation Parameter Control]
+    AB --> AC[Analytics, Compliance, and Event Settings]
+    AC --> AD[Aggregate Multiplayer Data]
+    AD --> X
+    
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style AA fill:#bbf,stroke:#333,stroke-width:2px

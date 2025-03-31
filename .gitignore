@@ -1,0 +1,30 @@
+# R project files
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# Output files
+*.html
+*.pdf
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
+
+# R packages
+*.tar.gz
+*.tgz
+
+# RStudio project files
+*.Rproj
+
+# Shiny apps deployment
+rsconnect/
+
+# Data files
+/data/
+
+# Response file from URL check
+response.zip 

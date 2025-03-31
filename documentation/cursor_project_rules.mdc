@@ -1,0 +1,80 @@
+---
+description: Apply these rules when making changes to the project
+globs:
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+## Project Overview
+
+*   **Type:** Insurance Simulation Game (Web Application)
+*   **Description:** An interactive simulation designed to teach insurance company management through a realistic, turn-based game experience involving financial reporting, risk management, and strategic investments.
+*   **Primary Goal:** Empower users—students, newcomers, and educators—to understand and manage insurance operations via realistic financial and regulatory challenges.
+
+## Project Structure
+
+### Framework-Specific Routing
+
+*   **Directory Rules:**
+
+    *   **Shiny (R) Structure:** Utilize a modular Shiny framework where application logic is split between UI, Server, and Modules. Typical file patterns include `ui.R`, `server.R`, and dedicated module directories (e.g., `modules/` for reusable components, `www/` for assets).
+    *   Example: Place the main UI file as `ui.R`, server logic in `server.R`, and supporting modules such as input modules in `modules/inputs.R`.
+
+### Core Directories
+
+*   **Versioned Structure:**
+
+    *   **Modules Directory:** `modules/` → Contains reusable Shiny modules to ensure modularity and ease of maintenance.
+    *   **Assets Directory:** `www/` → Holds static files such as CSS (e.g., Darkly Shiny theme customizations), JavaScript, and images.
+    *   **Core Scripts:** Root-level files like `ui.R`, `server.R`, and optionally `global.R` for shared resources.
+
+### Key Files
+
+*   **Stack-Versioned Patterns:**
+
+    *   **`ui.R`:** Entry point for the Shiny front-end, integrating the Darkly Shiny theme with a dashboard layout and navigation elements.
+    *   **`server.R`:** Contains server-side logic, reactive expressions, and event handling to manage simulation flow, data persistence, and multiplayer functionality.
+    *   **`global.R`:** Optionally used for shared variables, data loading, and initialization of AI and simulation parameters.
+
+## Tech Stack Rules
+
+*   **Version Enforcement:**
+
+    *   **Shiny@Latest:** Leverage the latest stable version of Shiny with best practices in reactive programming and modular design.
+    *   **R@Latest:** Use the most current version of R available on shinyapps.io to ensure compatibility and performance.
+    *   **shinythemes@Latest:** Enforce the usage of the Darkly theme consistently across the application for a uniform UI experience.
+
+## PRD Compliance
+
+*   **Non-Negotiable:**
+
+    *   "Players set general strategy via sliders and engage in interactive simulation flows" must be fully supported by the UI and underlying reactive logic. This includes guided onboarding and responsive notifications without traditional tutorials.
+
+## App Flow Integration
+
+*   **Stack-Aligned Flow:**
+
+    *   **Shiny Simulation Flow:** The UI initiates with a dashboard landing page (defined in `ui.R`), routing users to various modules (e.g., player profile creation, simulation decision panels, analytics dashboards) with server-side functions in `server.R`. This flow is integrated with reactive modules to handle real-time data updates and administrative controls for multiplayer aggregation.
+
+## Best Practices
+
+*   **Shiny (R)**
+
+    *   Ensure clear separation between UI and server logic to maintain modular and maintainable code.
+    *   Utilize reactive expressions effectively to handle real-time data updates without unnecessary computations.
+    *   Implement comprehensive error handling and input validation, especially for simulation inputs and financial computations.
+    *   Leverage modular design by breaking down complex UI elements and server logic into smaller, reusable modules (placed in the `modules/` directory).
+    *   Use version control and code documentation to track changes and support future scalability.
+
+*   **R**
+
+    *   Adhere to tidyverse style guidelines to maintain readability and consistency across R scripts.
+    *   Optimize data operations using vectorized functions and efficient data structures for handling simulation and financial data.
+    *   Utilize appropriate package management to ensure reproducibility on shinyapps.io hosting.
+
+## Rules
+
+*   Derive folder/file patterns **directly** from tech stack documentation versions for Shiny and R.
+*   For Shiny applications, enforce the use of a clear separation between `ui.R`, `server.R`, and modular components in `modules/`.
+*   Static assets should be placed under the `www/` directory and referenced accordingly.
+*   Never mix patterns from different frameworks (e.g., avoid using React or Next.js directory structures in a Shiny project).

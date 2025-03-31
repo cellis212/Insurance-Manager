@@ -1,0 +1,74 @@
+---
+description: Apply these rules when making changes to the project
+globs:
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+## Overview
+
+This document outlines the asset auction simulations in the insurance simulation game. In these simulations, CFOs and CROs represent the players in auction transactions, which are driven by academic finance theories. The simulation uses player-controlled sliders and pre-defined executive skills to model decisions in these auctions.
+
+## Auction Simulation Mechanics
+
+### 1. Utility Calculation
+
+*   **Player Controls:**
+
+    *   Players adjust sliders to set strategic priorities for investments and risk management.
+    *   Personal executive skills in Investing, Risk Management, and Innovation, configured in player profiles, adjust the theoretical utilities.
+
+*   **Utility Formula:**
+
+    *   CFO utility values derive from simulated investment strategies and financial insights, influencing bids on assets like equities and treasuries.
+    *   CRO utility is rooted in academic finance models to simulate risk management decisions, impacting bids on tools like reinsurance and derivatives.
+
+### 2. Pre-Auction Phase
+
+*   **Game State Update:** The simulation proceeds in yearly cycles. At each period's end, the state is refreshed after aggregating player decisions.
+*   **Decision Submission:** Players submit decisions that are individually recorded. An admin aggregates them, updating the game state to define market conditions and available auction items.
+
+### 3. The Auction Process
+
+*   **Distinct Auctions:**
+
+    *   **Investment Asset Auction (CFO):** Simulates security procurements, with bids affected by theoretical utility models and market demand-supply balance.
+    *   **Risk Management Tool Auction (CRO):** Simulates bidding on resources like derivatives, guided by academic insights and resource availability.
+
+*   **Bidding Process:**
+
+    *   Automated bids based on player-defined utilities simulate strategic allocations according to theoretical models.
+    *   The system accounts for liquidity constraints and market scarcity, ensuring theoretical rigor through academic finance principles.
+    *   Turn-based synchronous bidding concludes with decisions aggregated to compute auction results.
+
+*   **Outcome Calculation:**
+
+    *   Winners are determined by aligning highest utility scores with asset availability, reflecting academic allocation principles.
+    *   Simulation outcomes influence company portfolio and risk profiles, interfacing with financial analytics to demonstrate changes.
+
+### 4. Post-Auction Integration
+
+*   **State Update:**
+
+    *   Auction results integrate into the main simulation, influencing the economic outlook in subsequent cycles per theoretical benchmarks.
+    *   Players receive feedback that adjusts future strategies through in-game notifications and dashboard updates.
+
+*   **Interactive Feedback Loop:**
+
+    *   Immediate simulation feedback adjusts behavioral strategies, informed by educational feedback loops.
+    *   Players engage with mechanisms for simulating skill investments, aligning gameplay with educational outcomes.
+
+## Additional Considerations
+
+*   **Simulation Dynamics:** While turn-based, the system ensures real-time synchronization upon player logins, maintaining decision integrity.
+
+*   **Scalable Participation:** Capable of handling over 200 users without independent game state updates, decisions centralize for administrative aggregation.
+
+*   **Customization for Educators:**
+
+    *   Admins customize financial and regulatory parameters impacting simulations, aligning with theoretical models through intuitive interfaces.
+    *   Simulation integrates deeply with the R backend via the Shiny app, securing structural reliability across educational contexts.
+
+## Conclusion
+
+This auction simulation system embodies realistic financial management education, leveraging academic finance theories for bidding process accuracy. Through the strategic interplay in CFO and CRO simulations, players deepen understanding of investment and risk management principles in dynamic, theory-aligned environments.

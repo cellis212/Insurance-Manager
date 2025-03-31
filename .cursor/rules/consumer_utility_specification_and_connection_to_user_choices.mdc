@@ -1,0 +1,89 @@
+---
+description: Apply these rules when making changes to the project
+globs:
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+# Consumer Utility Specification and Connection to User Choices
+
+This document details the product characteristics and underlying parameters that drive the consumer utility function in the Insurance Simulation Game. It also provides an explanation of how user choices map directly into the factors that determine consumer utility within the simulation.
+
+## Overview
+
+The Insurance Simulation Game is built around experiencing the management of an insurance company. By simulating key areas of decision-making such as premium pricing, investment strategies, risk management, and compliance, the game creates a rich environment where both educational and market dynamics come into play. Central to this experience is the consumer utility function, derived from a BLP-style utility framework, which governs how policyholders and market forces interact with the company’s insurance products.
+
+## Consumer Utility Function Inputs
+
+The consumer random utility functions incorporate various product characteristics as inputs. Consumers make a choice in each of the product markets and have the option of not purchasing. Below are some of the major factors:
+
+*   **Product Pricing (Premium Rates) relative to consumer's expected costs:**
+
+    *   The premium rates are set by line and expected costs for each consumer (plus an error that is determined by quality of actuarial science and line). Put as a slider with 100% = premiums equal expected claims. Size of the slider (so how much you can adjust) is based on the price level last year and the strictness of the regulator for each state.
+
+*   **Advertising:**
+
+    *   Players choose advertising levels in each market and get a "brand recognition" score that is a stock variable that updates over time based on the flow of advertising spending.
+
+*   **Bundling:**
+
+    *   Consumers like to use the same company for multiple products. Users have the option of offering a bundling discount or surcharge.
+
+*   **Product Features (chosen by user):**
+
+    *   Experience rating, general cost sharing levels, denial rates, telematics, etc.
+    *   Players can earn the option of offering multiple products in the same line through the tech tree.
+
+*   **Service Quality**:
+
+    *   Users choose how much to invest in consumer-facing employees (costs differ by state and skills).
+
+*   **Technological Innovation and Service Quality:**
+
+    *   Through a tech tree and upgrades, the quality of customer service, quick response times, and effective risk management contribute to the overall utility that consumers derive from the product.
+
+## Mapping User Choices to Utility Parameters
+
+User choices throughout the game directly affect the parameters used in the consumer utility function. Some key mappings include:
+
+*   **Executive Profile and Background:**
+
+    *   During onboarding, players create an executive profile with choices such as secondary majors (Finance, Actuarial Science, Business Analytics, etc.) and grad school options. These choices not only customize the player’s starting capital and state but also influence their effectiveness in managing different simulation aspects (investment, pricing, risk management).
+
+*   **Skill Investments:**
+
+    *   As players level up by investing in themselves, they improve skills such as advertising, management, risk management, and innovation. These enhanced skills improve decision-making quality, which is then reflected in the consumer utility function by potentially offering better pricing, regulatory compliance, or investment outcomes.
+
+*   **Strategic Setting and Slider Choices:**
+
+    *   Players set premium rate adjustments directly, investment portfolio strategies, and hedging via interactive sliders. The choices determine the "utility" quality of executive offices like CRO and CFO during simulated auctions for limited assets.
+
+*   **Simulation Parameter Adjustments by Educators:**
+
+    *   Administrators and educators have the ability to tweak baseline simulation parameters, including utility function characteristics, premium rate multipliers, and risk function parameters. This ensures that the simulation can be customized for different educational scenarios or real-world learning objectives.
+
+## Simulation and Dynamic Adjustment
+
+The consumer utility function in the game is dynamic:
+
+*   **Year-by-Year Update:**
+
+    *   The game advances on a yearly cycle where players’ inputs from the previous round are aggregated by the admin, and subsequent changes to the consumer utility are simulated using demand, cost, and asset market models.
+
+*   **Variable Accuracy of Reports:**
+
+    *   The extent of investment in analytics by the player not only determines the accuracy of financial reports but also feeds back into how consumers perceive the utility value of the insurance products.
+
+*   **Real-World Simulation Elements:**
+
+    *   The system includes realistic parameters driven by consumer demand models adapted from utility functions in empirical research (e.g., BLP models). Educators can modify these core parameters to simulate different market conditions.
+
+*   **Major Event Simulations:**
+
+    *   Each year, a draw is made for a major event in each state (hurricanes, regulatory events, etc.
+
+## Conclusion
+
+This document has outlined the critical components of the consumer utility function along with how they are influenced by user decisions. Through mindful mapping of executive choices—from strategic setup to ongoing operational decisions—players experience a direct, tangible impact on how consumers value their insurance product offerings. This connection creates a comprehensive learning environment that both simulates market dynamics and teaches insurance management principles.
+
+Feel free to update simulation parameters and mappings as the game evolves to further refine the interplay between user choices and consumer utility.

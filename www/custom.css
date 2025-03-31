@@ -1,0 +1,264 @@
+/* Insurance Simulation Game - Custom CSS Styling */
+/* This file enhances the Darkly Shiny theme with custom styling */
+
+/* Overall app styling */
+body {
+  font-family: 'Roboto', 'Open Sans', sans-serif;
+  background-color: #2E2E2E;
+  color: #FFFFFF;
+}
+
+/* Header styling */
+.navbar {
+  border-radius: 0;
+  margin-bottom: 20px;
+}
+
+.navbar-brand {
+  font-weight: 600;
+}
+
+/* Dashboard panel styling */
+.well {
+  background-color: #1D1D1D;
+  border: 1px solid #3D3D3D;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Navigation buttons */
+.btn-block {
+  margin-bottom: 10px;
+  border-radius: 3px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.btn-block:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Section headers */
+h2, h3, h4 {
+  border-bottom: 1px solid #3D3D3D;
+  padding-bottom: 8px;
+  margin-bottom: 15px;
+  color: #00AEEF;
+}
+
+/* Inbox message styling */
+.inbox-message {
+  border: 1px solid #3D3D3D;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 10px;
+  background-color: #1D1D1D;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.inbox-message:hover {
+  border-color: #00AEEF;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.inbox-message h4 {
+  margin-top: 0;
+  color: #FFF;
+  border-bottom: none;
+}
+
+.inbox-message-sender {
+  color: #00AEEF;
+  font-weight: 600;
+}
+
+.inbox-message-time {
+  color: #999;
+  font-size: 0.9em;
+  font-style: italic;
+}
+
+/* Slider input styling */
+.irs-bar {
+  background-color: #00AEEF;
+  border-top: 1px solid #00AEEF;
+  border-bottom: 1px solid #00AEEF;
+}
+
+.irs-bar-edge {
+  background-color: #00AEEF;
+  border: 1px solid #00AEEF;
+}
+
+.irs-single, .irs-from, .irs-to {
+  background-color: #00AEEF;
+}
+
+/* Table styling */
+.table {
+  background-color: #1D1D1D;
+  border: 1px solid #3D3D3D;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: #2A2A2A;
+}
+
+.table-hover > tbody > tr:hover {
+  background-color: #333333;
+}
+
+/* Analytics visualization enhancements */
+.plotly, .plot-container {
+  background-color: #1D1D1D !important;
+}
+
+.svg-container {
+  border: 1px solid #3D3D3D;
+  border-radius: 5px;
+}
+
+/* Notification styling */
+.shiny-notification {
+  background-color: #333333;
+  color: #FFF;
+  border-color: #00AEEF;
+}
+
+/* Success indicators */
+.text-success {
+  color: #28A745;
+}
+
+/* Warning indicators */
+.text-warning {
+  color: #FFD700;
+}
+
+/* Danger indicators */
+.text-danger {
+  color: #DC3545;
+}
+
+/* Tooltip enhancements */
+.tooltip-inner {
+  background-color: #00AEEF;
+  max-width: 300px;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.tooltip.top .tooltip-arrow {
+  border-top-color: #00AEEF;
+}
+
+/* Profile setup section */
+.profile-setup {
+  background-color: #1D1D1D;
+  border: 1px solid #3D3D3D;
+  border-radius: 5px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+/* Executive profile card */
+.executive-card {
+  background-color: #1D1D1D;
+  border: 1px solid #3D3D3D;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.executive-card h3 {
+  margin-top: 0;
+  color: #FFF;
+  border-bottom: 1px solid #3D3D3D;
+  padding-bottom: 10px;
+}
+
+.executive-detail {
+  margin-bottom: 10px;
+}
+
+.executive-label {
+  font-weight: 600;
+  color: #00AEEF;
+}
+
+/* Dashboard metric cards */
+.metric-card {
+  background-color: #1D1D1D;
+  border-left: 4px solid #00AEEF;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.metric-title {
+  font-size: 1.1em;
+  color: #FFF;
+  margin-bottom: 5px;
+}
+
+.metric-value {
+  font-size: 2em;
+  font-weight: 600;
+  color: #00AEEF;
+}
+
+.metric-unit {
+  font-size: 0.9em;
+  color: #FFF;
+  margin-left: 5px;
+}
+
+.metric-change {
+  font-size: 0.9em;
+  margin-top: 5px;
+}
+
+.metric-card.positive {
+  border-left-color: #28A745;
+}
+
+.metric-card.positive .metric-value {
+  color: #28A745;
+}
+
+.metric-card.negative {
+  border-left-color: #DC3545;
+}
+
+.metric-card.negative .metric-value {
+  color: #DC3545;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .btn-block {
+    font-size: 0.9em;
+    padding: 8px 12px;
+  }
+  
+  h2 {
+    font-size: 1.8em;
+  }
+  
+  h3 {
+    font-size: 1.5em;
+  }
+  
+  .metric-card {
+    padding: 10px;
+  }
+  
+  .metric-value {
+    font-size: 1.6em;
+  }
+} 

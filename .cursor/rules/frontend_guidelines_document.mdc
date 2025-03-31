@@ -1,0 +1,143 @@
+---
+description: Apply these rules when making changes to the project
+globs:
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+# Frontend Guideline Document
+
+This document outlines the structure, design principles, and technologies used for the front end of our Insurance Simulation Game. It’s written in simple language, so anyone—even someone without a technical background—can understand how everything fits together.
+
+## 1. Frontend Architecture
+
+Our frontend is built using R Shiny. Shiny provides a flexible and dynamic way to create interactive web applications. The architecture is designed using a modular approach (via Shiny modules), which helps keep code organized and maintainable. 
+
+Key aspects:
+
+- **Frameworks & Libraries:**
+  - R Shiny for interactivity and reactive programming.
+  - Darkly Shiny Theme which offers a professional, dark, Football Manager-inspired appearance.
+
+- **Scalability & Maintainability:**
+  - By using a module-based structure, components can be reused across different parts of the game. This helps reduce duplication and streamline updates as the project grows.
+  - The design supports multiple players with up to 200 concurrent connections without heavy rework by efficiently managing session-specific data.
+
+- **Performance:**
+  - R Shiny is enhanced with reactive components that only update the parts of the UI that need changes. This makes the user experience smooth and quick, even with real-time simulation updates.
+
+## 2. Design Principles
+
+The guiding design principles ensure that the application is friendly for all users:
+
+- **Usability:**
+  - The game interfaces are intuitive. With dashboards, tooltips, and notifications, users receive immediate feedback for every action.
+
+- **Accessibility:**
+  - The interface incorporates clear fonts, high-contrast themes, and step-by-step guided setups to accommodate users with different needs.
+
+- **Responsiveness:**
+  - The design adapts to different devices, ensuring that whether on a desktop or tablet, the experience is consistent.
+
+Additionally, interactive charts, tables and dynamic dashboards enhance how users monitor performance and make decisions, making complex insurance concepts easy to grasp.
+
+## 3. Styling and Theming
+
+### Styling Approach
+
+- **CSS Methodology:**
+  - The project uses a combination of CSS best practices tailored for R Shiny, including elements of BEM (Block Element Modifier) for naming classes and managing component-specific styles. While R Shiny handles much of the reactive styling, custom CSS is used to fine-tune the visual appeal and usability.
+
+- **Pre-Processors & Frameworks:**
+  - SASS may be used for writing cleaner and more maintainable CSS if needed, although the primary theme is handled by the Darkly Shiny Theme.
+
+### Theming
+
+- **Theme & Style:**
+  - The overall look is inspired by Football Manager interfaces with a dark, shiny theme. This style, often called a dark UI theme, uses modern flat design principles to keep the interface professional yet engaging.
+  - It integrates elements of modern material design to provide clear visual hierarchies and intuitive navigation.
+
+- **Color Palette:**
+  - Primary Dark Gray (#2E2E2E) and Black (#000000) for background elements.
+  - Accent colors in blue (#00AEEF) and white (#FFFFFF) for text and interactive elements to ensure high contrast.
+  - Occasional use of green (#28A745) and red (#DC3545) to represent success and warnings respectively.
+
+- **Fonts:**
+  - A clean, modern sans-serif font like "Roboto" or "Open Sans" helps maintain readability and complements the professional financial tone of the application.
+
+## 4. Component Structure
+
+Our component-based approach focuses on breaking the UI into small, manageable pieces:
+
+- **Organization and Reuse:**
+  - Each part of the game (for example, dashboards, simulation reports, inbox-driven decisions, tooltips, and notifications) is encapsulated in its own Shiny module. This not only makes the code easier to manage but also enables reusing components when needed.
+
+- **Maintainability:**
+  - By isolating functionality, it's easy to update or replace components without disturbing the whole system. This modularity is key when adding features like multiplayer synchronization or new simulation parameters.
+
+## 5. State Management
+
+State management in our project ensures that no user action is lost and that the game remains consistent across different screens:
+
+- **Using Reactive Values:**
+  - Shiny’s reactive programming model acts as our state management system. Data that drives the UI is stored in reactive variables, ensuring that when users update a value (like a slider in their investment strategy), only the relevant parts of the screen are refreshed.
+
+- **Shared State:**
+  - Whether it’s the executive profile, skills, or simulation results, state values are shared across components through reactive contexts. This results in a seamless and smooth user experience as players navigate the game.
+
+## 6. Routing and Navigation
+
+Even though traditional URL routing isn’t the focus with R Shiny, navigation is handled smoothly through a dashboard layout:
+
+- **Navigation Structure:**
+  - The main dashboard includes sidebars and menus that allow users to switch between sections (e.g., simulation dashboard, analytics, and administrative tools).
+  - Each module (such as the inbox, simulation parameters, or admin panel) is displayed within this layout, maintaining consistency across the application.
+
+- **User Flow:**
+  - The system is designed in a way that players can easily move from decision-making screens to detailed reports and back, ensuring minimal disruption in user activity.
+
+## 7. Performance Optimization
+
+To keep the game running smoothly even with up to 200 players, several performance strategies are in place:
+
+- **Lazy Loading:**
+  - Not all components load at the same time. Modules load as users navigate to their sections, reducing initial load time.
+
+- **Reactive Efficiency:**
+  - Only parts of the UI that need an update (due to user action or data change) are refreshed, keeping the app responsive.
+
+- **Code Splitting and Asset Optimization:**
+  - Code is organized in a way that limits unnecessary resource use. Assets such as images and scripts are optimized and only loaded when necessary.
+
+These methods ensure that the simulation remains fast, even during heavy computation or when a large number of players are active.
+
+## 8. Testing and Quality Assurance
+
+The project uses a layered approach to testing, ensuring high reliability and fewer bugs in the final product:
+
+- **Unit Testing:**
+  - Individual modules and functions are tested using R’s testing frameworks (like testthat), ensuring basic functionality is correct.
+
+- **Integration Testing:**
+  - Interactions between modules (for example, how the dashboard communicates with state management functions) are continuously tested.
+
+- **End-to-End Testing:**
+  - Simulated gameplay is tested to assess the entire flow—from profile creation to simulated decision aggregation—ensuring that every step works as expected.
+
+- **Tools:**
+  - Automated testing suites and manual testing sessions are both part of the process to maintain quality and address any performance issues early on.
+
+## 9. Conclusion and Overall Frontend Summary
+
+To wrap up, our frontend setup for the Insurance Simulation Game is built on R Shiny and a robust module-based architecture that embraces scalability, maintainability, and performance. Guided by key design principles—usability, accessibility, and responsiveness—the interface uses a modern dark, shiny theme with clear quantitative feedback through interactive dashboards and charts.
+
+Key takeaways:
+
+- The frontend architecture uses a modular design powered by R Shiny to ensure a clean and responsive system.
+- Design principles align with delivering an educational yet realistic simulation of insurance management, making it accessible to students and professionals alike.
+- Styling and theming follow a dark, professional aesthetic along with a consistent color palette and typography to ensure readability.
+- State management via reactive values allows seamless user experience and smooth game progression.
+- Performance is optimized through lazy loading, selective rendering, and asset management.
+- Comprehensive testing strategies ensure that the application is reliable and ready for real-world usage.
+
+This comprehensive guide should leave no ambiguity about the front-end’s design and implementation, serving as a solid foundation for both development and future enhancements of the Insurance Simulation Game.

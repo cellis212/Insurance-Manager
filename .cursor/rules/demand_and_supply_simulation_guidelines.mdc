@@ -1,0 +1,59 @@
+---
+description: Apply these rules when making changes to the project
+globs:
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+# Demand and Supply Simulation Guidelines
+
+This document details the simulation framework based on a BLP-style utility model for assessing insurance demand and costs. The simulation is an integral part of the Insurance Simulation Game and forms the backbone of the strategic decision-making process that players must navigate.
+
+## Overview
+
+The simulation models consumer behavior and market dynamics using a modified version of the Berry-Levinsohn-Pakes (BLP) framework. It is designed to reflect real-world insurance consumer decisions by integrating product utility, premium cost sensitivity, and alternative risk coverage choices.
+
+## Key Components
+
+### 1. Utility Functions
+
+*   **Consumer Utility:** The utility functions assess the attractiveness of each insurance policy by considering premium prices, risk factors (loss ratio, combined ratio), and product differentiation. Each consumer's choice is modeled using a utility equation whose parameters can be fine-tuned by educators.
+
+*   **Parameter Variability:** Administrators have the ability to adjust utility parameters such as:
+
+    *   Base attractiveness of insurance products
+    *   Sensitivity to premium changes
+    *   Impact of regulatory influences and compliance costs
+
+### 2. Demand Simulation
+
+*   **Market Demand:** The demand for various insurance lines (Home, Auto, Health, Life, and Annuities) is determined by aggregating individual consumer utilities. This results in market share estimates and identifies trends based on premium adjustments and underlying consumer preferences.
+*   **Regional Variations:** The simulation will incorporate geographic differentiation (Iowa, GA, Florida) by applying region-specific multipliers to demand, reflecting local market dynamics and economic environments.
+
+### 3. Cost and Investment Framework
+
+*   **Cost Parameters:** The simulation factors in inherent policy costs, administrative overheads, and risk management expenditures. Changes in these costs can influence the overall utility and thereby affect demand.
+*   **Investment Impact:** Investment performance, determined by player strategies in the CFO and CRO roles, indirectly influences policy pricing and consumer perception through associated improvements or deteriorations in service quality.
+
+### 4. Administrator Adjustability
+
+*   **Parameter Editing:** Through the administrator interface, educators and facilitators can modify elements such as baseline utility, sensitivity coefficients, and market dynamics parameters. This ensures a scalable difficulty curve and a pedagogically relevant experience.
+*   **Event-driven Changes:** Random or event-triggered adjustments (based on historical financial market or insurance scenarios) can be integrated, stressing the system's adaptability and responsiveness.
+
+## Simulation Workflow
+
+1.  **Player Decision Phase:** Players set strategic parameters like premium rates and investment strategies. These decisions feed into the simulation for a given year.
+2.  **Data Aggregation:** All individual decisions are stored and then aggregated by the admin-triggered year-end update. The simulation pulls these inputs to update market demand and cost structures.
+3.  **Utility Calculation:** Using the current parameters, the BLP-style utility functions compute expected consumer behavior. Demand is then recalculated based on these utilities.
+4.  **Market Outcome:** The simulation reflects the updated market dynamics, showing players performance metrics such as loss ratio, combined ratio, and the overall market share of different insurance products.
+5.  **Feedback Loop:** Updated results are fed back to the players for further strategic adjustments, mimicking a real-world iterative decision-making process.
+
+## Implementation Considerations
+
+*   **Backend Integration:** The intensive simulation will run on the R backend, hosted on shinyapps.io, providing real-time updates and ensuring consistency across player interactions.
+*   **Scalability:** Designed to handle synchronous, turn-based interactions with potentially more than 200 players, the system aggregates individual files into a consolidated game state at each simulation cycle.
+*   **User Guidance:** While a detailed tutorial is not provided, tooltips and an on-boarding guided setup for executive profile creation will help players understand the simulation’s impact on game outcomes.
+
+## Conclusion
+
+This simulation framework offers a detailed and flexible environment that mirrors the complexities of the insurance market. By leveraging a BLP-style utility approach, the game not only challenges players to optimize their strategic decisions but also provides a rich educational experience in financial risk management and market dynamics.

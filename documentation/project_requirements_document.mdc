@@ -1,0 +1,170 @@
+---
+description: Apply these rules when making changes to the project
+globs:
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+# Project Requirements Document (PRD)
+
+## 1. Project Overview
+
+This project is an Insurance Simulation Game built as an interactive web application with the goal of teaching users about managing an insurance company. By simulating real-life decisions such as premium pricing, investments, and risk management, players will see how each decision affects the financial outcomes of their own insurance firm. The game is designed to be both educational and engaging, allowing students, newcomers, and educators in the insurance and finance fields to understand industry principles through hands-on experience.
+
+The app is being built to provide a realistic simulation environment where real-life financial and regulatory decisions drive corporate performance. Key objectives include offering a guided setup for creating an executive profile, simulating multiple lines of business and market conditions, and providing both detailed analytics and a responsive multiplayer experience. Success for the project will be measured by its ability to clearly demonstrate complex industry concepts, its ease of use for the target audiences, and its performance in both single-player and turn-based multiplayer scenarios.
+
+## 2. In-Scope vs. Out-of-Scope
+
+**In-Scope:**
+
+*   Interactive onboarding and guided setup for creating an executive profile (including selection of secondary major, grad school, and university).
+*   A dynamic dashboard influenced by football manager aesthetics with a dark UI theme (Darkly Shiny theme).
+*   An inbox-based navigation system where players receive emails from various C-suite roles (CEO, CFO, CCO, CAO, CRO, Chief Actuary).
+*   Decision-making modules for setting premium pricing, investment strategies, risk management, and compliance levels.
+*   Simulation engine built using R and Shiny that updates the game state on a yearly (or weekly in practical rounds) basis.
+*   Turn-based synchronous multiplayer mode supporting at least 200 players, where individual decision files are aggregated by an administrator.
+*   Comprehensive administrator/facilitator interface with full control over simulation parameters, user accounts, and triggering game events.
+*   Detailed analytics dashboards showing key performance metrics (loss ratio, combined ratio, additional KPIs based on investment in analytics) with interactive charts and tables.
+*   A tech tree to simulate innovation and progression.
+*   Clear tooltips throughout the app to help explain insurance terms, financial concepts, and gameplay mechanics.
+
+**Out-of-Scope:**
+
+*   Advanced AI-generated images or dynamic office visuals (planned for a later version).
+*   A full in-app tutorial (in-class sessions and tooltips will handle introductions).
+*   Complex branding elements such as specific fonts or colors beyond the stated dark UI theme.
+*   Integration with external systems beyond the R backend hosted on shinyapps.io (such as third-party analytics or data storage solutions outside the chosen environment).
+
+## 3. User Flow
+
+A new user begins by landing on the login screen where they are prompted to sign in or register. Once logged in, they proceed to a guided setup process where they create their executive profile. During this onboarding, players choose a secondary major, select a grad school option, and pick a university, all of which help determine their starting state, salaries, and market performance. Throughout this process, tooltips provide helpful hints explaining complex insurance and financial terms.
+
+After completing the setup, users are taken to the main dashboard that looks like a football manager-style interface. The dashboard displays the inbox system with emails from various C-suite roles, enabling players to quickly view and act on notifications regarding premium adjustments, investment strategies, and compliance decisions. Once players make their strategic choices, these are saved individually. When the administrator triggers the yearly update, the game state evolves based on aggregate decisions and simulations, and players log in (or refresh) to see updated analytics and performance metrics before starting the next turn.
+
+## 4. Core Features (Bullet Points)
+
+*   **Executive Profile Setup:**
+
+    *   Guided onboarding where players select a secondary major, grad school, university, and initial skills.
+    *   Determines starting capital and market performance multipliers.
+
+*   **Inbox-Based Navigation:**
+
+    *   Central communication hub mimicking an email system.
+    *   Receives notifications and game events from c-suite executives (CEO, CFO, CCO, CAO, CRO, Chief Actuary).
+
+*   **Decision-Making Modules:**
+
+    *   Interactive inputs for premium pricing, investment strategy, risk management, and compliance settings.
+    *   Sliders and selection tools to set general strategic directions.
+
+*   **Simulation Engine:**
+
+    *   Back-end simulation using R and Shiny updates the game state yearly/weekly.
+    *   Uses a utility framework based on real-world insurance and financial principles.
+
+*   **Multiplayer Turn-Based Synchronous Mode:**
+
+    *   Supports at least 200 players who submit individual decisions.
+    *   An administrator aggregates decisions and updates the shared game state each turn.
+
+*   **Administrator Interface:**
+
+    *   Full control over simulation parameters such as premium rates, investments, risk functions, and user management.
+    *   Ability to trigger in-game events and adjust simulation settings.
+
+*   **Analytics Dashboards:**
+
+    *   Detailed visualizations including loss ratios, combined ratios, and other performance KPIs.
+    *   Interactive charts and tables based on investment in analytics by the player’s company.
+
+*   **Progression & Tech Tree:**
+
+    *   Level-up system driven by investment in self-improvement and company performance.
+    *   A tech tree that reflects innovative progress and impacts game mechanics.
+
+*   **Persistent Data & History:**
+
+    *   Saves game state in individual files for each player.
+    *   Supports replays and progress tracking even if the company scales down after bankruptcy.
+
+## 5. Tech Stack & Tools
+
+*   **Frontend:**
+
+    *   R Shiny (for dashboard and interactive UI components) with a dark UI theme inspired by Football Manager (using Darkly Shiny theme).
+
+*   **Backend:**
+
+    *   R for core simulation logic.
+    *   Hosting on shinyapps.io for deployment.
+    *   File storage for individual player decision files.
+
+*   **AI & Code Assistance Tools:**
+
+    *   Cursor (advanced IDE with AI-powered coding suggestions).
+    *   Claude 3.7 Sonnet and Claude 3.5 Sonnet (for intelligent code assistance and reasoning).
+    *   Gemini 2.5 Pro (for tackling complex coding problems and providing hybrid reasoning support).
+
+*   **Version Control:**
+
+    *   Use cursor-tools to initially create a github for the project. Organize your workflow through the standard pull / push request workflow. You are an incredible SWE, act like it.
+    *   Do a ton of unit tests to make sure each update doesn't break something.
+
+## 6. Non-Functional Requirements
+
+*   **Performance:**
+
+    *   The system must handle up to 200 players submitting decisions simultaneously in a turn-based setup.
+    *   Game state updates and analytics should be generated within an acceptable window (aiming for under one minute where possible).
+
+*   **Security:**
+
+    *   Ensure secure login with persistent player identifiers. Players will be given their login ids and then an initial password that you should let them change. Don't worry about people hacking into the passwords, just store them unhashed.
+
+*   **Usability & Accessibility:**
+
+    *   The interface should be intuitive with clear navigation and responsive design.
+    *   Tooltips should explain industry-specific terms to make the simulation accessible to newcomers.
+
+## 7. Constraints & Assumptions
+
+*   **Constraints:**
+
+    *   The simulation relies on the R backend integrated with Shiny, which may have performance limitations with very high complexity simulations.
+    *   The application is hosted on shinyapps.io, which may impose certain limitations on resource usage or scaling.
+    *   Multiplayer decision aggregation is done offline (via re-log or refresh) after the admin triggers the next turn.
+
+*   **Assumptions:**
+
+    *   It is assumed that all players will experience the same aggregated game state update triggered by the administrator.
+    *   Educators will perform in-class sessions to provide additional guidance, reducing the need for an in-app tutorial.
+    *   The simulation parameters (such as utility functions and risk functions) are basic in this version, with room for later customization.
+
+## 8. Known Issues & Potential Pitfalls
+
+*   **Decision Aggregation Overhead:**
+
+    *   Aggregating decisions from over 200 players may cause performance bottlenecks. Mitigation could include efficient file handling and batching of simulation updates.
+
+*   **Simulation Complexity:**
+
+    *   The underlying financial simulation (BLP-style utility framework) could lead to heavy computations. It might be necessary to optimize the simulation code or limit the complexity for real-time performance.
+
+*   **Multiplayer Synchronization:**
+
+    *   Ensuring that all player decisions are accurately captured and aggregated in a turn-based system could be prone to errors. Rigorously testing the save and update functions will be critical.
+
+*   **Backend Limitations:**
+
+    *   The usage of Shiny and hosting on shinyapps.io may restrict the expansion of features or handling of additional real-time updates. Keeping the initial feature set lean and optimizing resource usage is advised.
+
+*   **User Onboarding and Guidance:**
+
+    *   Since there is no full in-app tutorial, reliance on tooltips and in-class instruction might not be sufficient for all users. Continuous feedback from early users should guide any adjustments in the onboarding process.
+
+*   **AI Assistance Integration:**
+
+    *   Utilizing multiple AI models (Cursor, Claude, Gemini) requires careful coordination. Inconsistencies across models might lead to varied code quality or logic discrepancies. Establishing clear coding style guidelines and regular code reviews will help mitigate this risk.
+
+This PRD should serve as the comprehensive brain for the project, guiding all subsequent technical documents and ensuring every detail is fully captured for the AI and human developers to build a robust, educational, and engaging Insurance Simulation Game.

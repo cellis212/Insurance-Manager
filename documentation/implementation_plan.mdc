@@ -1,0 +1,112 @@
+---
+description: Apply these rules when making changes to the project
+globs:
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+# Implementation plan
+
+Below is the step-by-step implementation plan, organized by phases. Each step cites the appropriate project document section.
+
+---
+
+## Phase 1: Environment Setup
+
+1. **Prevalidation:** Check if the current directory already contains the essential project files (e.g., check for an existing `app.R`). If yes, note that the project is already initialized. *(Project Overview)*
+2. **Install R:** Ensure you have a current installation of R. If not, download and install the latest stable release. Then open an R session. *(Tech Stack: Frontend & Backend)*
+3. **Install Required Packages:** In R, install the needed packages by running:
+   ```R
+   install.packages(c('shiny', 'shinythemes', 'shinydashboard', 'plotly'))
+   ```
+   *(Tech Stack: Frontend)*
+4. **Validation:** Run an R session and execute `sessionInfo()` to verify that the packages are installed correctly.
+5. **IDE Tool Setup (Cursor):**
+   - Confirm that you have Cursor configured for AI assistance. If using tools like Claude 3.7 Sonnet or Gemini 2.5 Pro, ensure they are available in your workflow. *(Tech Stack: IDE/AI Tools)*
+   - (For Cursor: If there are any project-specific directories like `.cursor`, check if they exist. For this project, no external Supabase configuration is needed since file storage is used.)
+
+---
+
+## Phase 2: Frontend Development (R Shiny Application)
+
+6. **Create Main Application File:** Create the file `app.R` at the project root. This file will contain both the UI and server functions. *(Tech Stack: Frontend)
+
+7. **Set Up UI with Darkly Theme:** In `app.R`, implement the UI using the Darkly Shiny theme. For example:
+   ```R
+   library(shiny)
+   library(shinythemes)
+
+   ui <- fluidPage(
+     theme = shinytheme('darkly'),
+     titlePanel('Insurance Simulation Game'),
+     sidebarLayout(
+       sidebarPanel(
+         h3('Navigation'),
+         actionButton('profileBtn', 'Executive Profile'),
+         actionButton('inboxBtn', 'Inbox'),
+         actionButton('simCtrlBtn', 'Simulation Controls'),
+         actionButton('analyticsBtn', 'Analytics')
+       ),
+       mainPanel(
+         uiOutput('mainContent')
+       )
+     )
+   )
+   ```
+   *(Design Preferences)*
+
+8. **Implement Executive Profile UI:** Add UI components for creating an executive profile with fields for background, education (e.g., dropdowns, text inputs) and attach tooltips for explanations. *(Project Overview, Design Preferences)*
+
+9. **Design the Inbox Panel:** Create an inbox section within the UI to display simulation events and notifications. Consider using a reactive list or table. *(Project Overview: Inbox system for events)*
+
+10. **Add Interactive Analytics Charts:** Incorporate chart components (e.g., via Plotly) to display financial metrics (loss ratio, combined ratio, etc.). *(Project Overview: Analytics dashboards)
+
+11. **Validation:** Run the app locally using `shiny::runApp()` and verify that the UI displays the Darkly theme, navigation buttons, and placeholder panels for each game feature.
+
+---
+
+## Phase 3: Backend Development (R Simulation Logic and File Storage)
+
+12. **Create Backend Directory:** Create a folder named `backend/` in your project root to organize simulation scripts and modules. *(Modular Code Architecture)
+
+13. **Develop Simulation Logic:** In `backend/simulation.R`, implement simulation functions that use a BLP-style utility framework for demand and cost computations. *(Simulation Details)*
+
+14. **Implement Decision Storage:** Create a new directory called `data/` for storing individual player decision files (e.g., using CSV or RDS format). Write functions in `backend/data_ops.R` to handle reading/writing decisions. *(Project Overview: Data Storage)*
+
+15. **Develop Turn-Based Update Functions:** Code functions that aggregate individual player decisions at the end of each turn (year-update) and update the overall game state. *(Project Overview: Multiplayer & Turn-based Gameplay)*
+
+16. **Build Administrator Interface Modules:** In `backend/admin_ui.R` and `backend/admin_logic.R`, develop modules to allow administrators to customize simulation parameters (e.g., utility parameters, regulator strictness). *(Project Overview: Administrator Interface)
+
+17. **Validation:** Write and run test scripts (or manually call the functions) to verify that simulation functions work as expected with sample data.
+
+---
+
+## Phase 4: Integration
+
+18. **Integrate Backend with UI:** In `app.R`, source the backend scripts (e.g., `source('backend/simulation.R')`) and link reactive UI components to backend functions. *(Integration: Connecting Frontend and Backend)*
+
+19. **Map UI Actions to Simulation Updates:** Attach observers in the server function to process input events (e.g., when the admin clicks an 'Update Simulation' button, call the turn update functions). *(Project Overview: Turn-based Synchronous Multiplayer)*
+
+20. **Connect the Inbox Panel:** Link the inbox UI panel to a reactive data source that updates based on simulation events triggered by backend processes. *(Project Overview: Inbox system for events)*
+
+21. **Persist Player Data:** Ensure that when players make decisions, the data is stored in the `data/` directory using the functions built in step 14. *(Project Overview: Persistent player ID data)*
+
+22. **Validation:** Simulate a full turn cycle by manually triggering UI events and checking that decisions are stored and the simulation state updates accordingly.
+
+---
+
+## Phase 5: Deployment
+
+23. **Prevalidation Check:** Before deployment, ensure that the project structure is complete and check that files such as `app.R`, `backend/`, and `data/` exist.
+
+24. **Prepare for Deployment on shinyapps.io:** Sign in to or create your shinyapps.io account. Follow the instructions available at [shinyapps.io deployment](https://docs.rstudio.com/shinyapps.io/using/) to set up your account and application.
+
+25. **Deploy the Application:** Using the RStudio Deployment pane or the command line, deploy your app to shinyapps.io. For example, in RStudio, click on 'Publish' and follow the prompts. *(Tech Stack: Hosting)*
+
+26. **Configuration for Administrator Access:** Ensure that configuration settings (within your app or a separate configuration file) allow administrators to log in for game and simulation management. *(Project Overview: Administrator Interface)*
+
+27. **Final Validation:** After deployment, visit the shinyapps.io URL to confirm the application loads correctly, the dark theme is applied, and all interactive components (profile creation, inbox, analytics) function as intended. *(Q&A: Pre-Launch Checklist)*
+
+---
+
+This completes the high-level implementation plan. Continue refining individual modules and testing each component for full integration and reliability.
