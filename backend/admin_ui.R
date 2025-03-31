@@ -209,7 +209,7 @@ adminServerModule <- function(id, gameData) {
           turns <- c("Latest" = "latest")
           if (latestTurn > 0) {
             for (i in 0:latestTurn) {
-              turns <- c(turns, c(paste0("Turn ", i) = as.character(i)))
+              turns <- c(turns, setNames(as.character(i), paste0("Turn ", i)))
             }
           }
           localGameData$turnChoices <- turns
@@ -326,7 +326,7 @@ adminServerModule <- function(id, gameData) {
         
         # Update turn selector
         turns <- localGameData$turnChoices
-        turns <- c(turns, c(paste0("Turn ", newTurn) = as.character(newTurn)))
+        turns <- c(turns, setNames(as.character(newTurn), paste0("Turn ", newTurn)))
         localGameData$turnChoices <- turns
         updateSelectInput(session, "turnSelector", choices = turns)
         

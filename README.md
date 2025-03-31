@@ -1,73 +1,100 @@
 # Insurance Simulation Game
 
-An interactive educational web application designed to teach the principles of insurance company management through a realistic, turn-based simulation experience.
+A web-based educational simulation game that teaches insurance company management through interactive decision-making and financial analysis.
+
+![Insurance Simulation Game](www/img/logo.png)
 
 ## Overview
 
-The Insurance Simulation Game provides a hands-on learning environment for students, newcomers, and educators in the insurance and finance fields. Players take on the role of an insurance company executive, making critical decisions about premium pricing, investments, risk management, and compliance.
+The Insurance Simulation Game is an interactive web application designed to teach students, newcomers, and educators about managing an insurance company. Players take on the role of a C-suite executive and make strategic decisions about premium pricing, investments, risk management, and compliance.
 
-The simulation is built around a realistic BLP-style utility framework that models consumer behavior and market dynamics based on academic finance theories. This creates an engaging educational experience that demonstrates the real-world impact of strategic decisions on insurance company performance.
-
-## Key Features
-
-- **Executive Profile Creation**: Players begin by setting up an executive profile, selecting their secondary major, graduate school, and university preferences.
-- **Inbox-Based Navigation**: A central communication hub where players receive notifications and guidance from various C-suite roles.
-- **Decision-Making via Sliders**: Interactive sliders and input controls allow players to adjust premium rates, set investment strategies, and manage risk across multiple insurance lines.
-- **Comprehensive Analytics**: Detailed dashboards display key performance metrics such as loss ratio, combined ratio, and market share through interactive visualizations.
-- **Turn-Based Multiplayer**: Support for up to 200 players in a synchronous, turn-based environment where decisions are aggregated by an administrator.
-- **Administrator Interface**: Facilitators can customize simulation parameters, trigger game events, and manage the overall game state.
-
-## Technical Stack
-
-- **Frontend**: R Shiny with a dark UI theme (Darkly Shiny theme)
-- **Backend**: R for simulation logic and data processing
-- **Hosting**: Deployed on shinyapps.io
-- **Data Storage**: Individual player decisions stored in files for aggregation
+The game features:
+- Executive profile creation with customizable backgrounds and skills
+- Football Manager-inspired dark UI theme for an engaging experience
+- Inbox-based navigation system simulating communications within the company
+- Interactive simulation controls that affect financial outcomes
+- Comprehensive analytics dashboards with performance visualization
+- Turn-based multiplayer mode supporting up to 200 players
+- Administrator interface for educators to control simulation parameters
 
 ## Getting Started
 
 ### Prerequisites
 
-- R 4.4.1 or newer
-- Required R packages:
+- R 4.4.1 or higher
+- The following R packages (automatically managed with renv):
   - shiny
-  - shinythemes
   - shinydashboard
+  - shinythemes
   - plotly
+  - jsonlite
+  - shinyjs
+  - and other dependencies
 
 ### Installation
 
 1. Clone this repository:
+   ```
+   git clone https://github.com/your-username/insurance-simulation-game.git
+   cd insurance-simulation-game
+   ```
+
+2. Restore the renv environment:
+   ```
+   Rscript -e "renv::restore()"
+   ```
+
+3. Run the application:
+   ```
+   Rscript -e "shiny::runApp('.', port=3838)"
+   ```
+
+4. Open your browser and navigate to:
+   ```
+   http://localhost:3838
+   ```
+
+## Project Structure
+
+- **app.R** - Main application file containing both UI and server components
+- **backend/** - Core simulation logic and data operations
+  - **simulation.R** - BLP-style utility framework for insurance demand 
+  - **data_ops.R** - Functions for reading/writing data
+  - **admin_ui.R** - Administrator interface for simulation control
+- **modules/** - Reusable Shiny modules
+  - **profile_module.R** - Executive profile creation and management
+  - **inbox_module.R** - Communication system
+  - **analytics_module.R** - Performance dashboards
+- **data/** - Directory for game state and player decisions
+- **www/** - Static assets (CSS, images)
+- **tests/** - Selenium and unit tests
+
+## Testing
+
+The project includes automated tests using RSelenium. To run the tests:
+
 ```
-git clone https://github.com/yourusername/insurance-simulation-game.git
+Rscript tests/selenium_tests.R
 ```
 
-2. Install the required R packages:
-```R
-install.packages(c('shiny', 'shinythemes', 'shinydashboard', 'plotly'))
+Note: You need to have the application running on port 3838 and Chrome WebDriver installed for the tests to work properly.
+
+## Administration
+
+For educators and session facilitators, the admin interface can be accessed by logging in with administrator credentials. This provides:
+
+- Control over simulation parameters
+- Management of player accounts
+- Ability to trigger game events
+- Analysis of player decisions and performance
+
+## Development
+
+This project uses renv for dependency management to ensure consistent environments across installations. If you add or update packages, remember to run:
+
 ```
-
-3. Run the application locally:
-```R
-shiny::runApp()
+Rscript -e "renv::snapshot()"
 ```
-
-### Directory Structure
-
-- `app.R`: Main application file
-- `backend/`: Simulation logic and backend functions
-- `data/`: Storage for player decisions and game state
-- `modules/`: Reusable Shiny modules
-- `www/`: Static assets (CSS, images, etc.)
-
-## Deployment
-
-The application is designed to be deployed on [shinyapps.io](https://www.shinyapps.io/). Follow these steps to deploy:
-
-1. Create an account on shinyapps.io
-2. Install the rsconnect package: `install.packages('rsconnect')`
-3. Configure your account credentials
-4. Deploy using the RStudio interface or the command line
 
 ## License
 
@@ -75,6 +102,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Acknowledgments
 
-- Project designed for educational purposes in insurance and risk management courses
-- Built with modern R and Shiny frameworks
-- Simulation models based on academic finance and insurance principles 
+- Developed as part of the Risk Management and Insurance course curriculum
+- Uses the Darkly Shiny theme for UI components
+- Built with R and Shiny framework 

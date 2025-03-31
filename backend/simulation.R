@@ -327,4 +327,393 @@ run_simulation <- function(company_decisions, market_conditions) {
   )
   
   return(results)
+}
+
+# This line might cause circular dependencies, so let's conditionally source
+if (!exists("validate_game_state")) {
+  source("backend/validation.R")
+}
+
+#' Calculate consumer utility for a given insurance product
+#'
+#' @param consumer A list containing consumer characteristics
+#' @param product A list containing product characteristics
+#' @return Utility value (higher is better)
+calculate_consumer_utility <- function(consumer, product) {
+  # Basic utility calculation using consumer and product parameters
+  # This implements a simplified version of the BLP utility framework
+  
+  # Extract parameters
+  price_sensitivity <- consumer$price_sensitivity
+  risk_profile <- consumer$risk_profile
+  
+  premium <- product$premium
+  expected_cost <- product$expected_cost
+  quality <- product$quality
+  advertising <- product$advertising
+  
+  # Calculate utility components
+  price_utility <- -price_sensitivity * (premium / expected_cost - 1)
+  quality_utility <- quality * 2  # Quality has a positive effect
+  advertising_utility <- advertising * risk_profile  # Higher risk profiles are more influenced by advertising
+  
+  # Regional adjustments based on consumer's region
+  region_factor <- switch(consumer$region,
+                         "Iowa" = 1.0,
+                         "Georgia" = 1.1,
+                         "Florida" = 1.2,
+                         1.0)  # Default if region not recognized
+  
+  # Combined utility with regional adjustment
+  utility <- (price_utility + quality_utility + advertising_utility) * region_factor
+  
+  return(utility)
+}
+
+#' Simulate market demand based on current conditions
+#'
+#' @param market A list containing market characteristics
+#' @param price_level The relative price level (1.0 = neutral)
+#' @return A list containing volume and market share
+simulate_market_demand <- function(market, price_level) {
+  # Extract market parameters
+  consumers <- market$consumers
+  base_demand <- market$base_demand
+  competitors <- market$competitors
+  
+  # Calculate base volume
+  base_volume <- consumers * base_demand
+  
+  # Price elasticity effect
+  price_effect <- exp(-1.5 * (price_level - 1))  # Exponential decrease with higher prices
+  
+  # Competition effect
+  competition_effect <- 1 / (1 + 0.2 * competitors)
+  
+  # Calculate final volume
+  volume <- base_volume * price_effect * competition_effect
+  
+  # Calculate market share (percentage of total potential market)
+  market_share <- volume / consumers
+  
+  return(list(
+    volume = volume,
+    market_share = market_share
+  ))
+}
+
+#' Calculate risk based on parameters
+#'
+#' @param params A list containing risk parameters
+#' @return Risk value between 0 and 1
+calculate_risk <- function(params) {
+  # Extract parameters
+  base_probability <- params$base_probability
+  severity_multiplier <- params$severity_multiplier
+  region_factor <- params$region_factor
+  
+  # Calculate risk
+  risk <- base_probability * severity_multiplier * region_factor
+  
+  # Ensure risk is between 0 and 1
+  risk <- max(0, min(1, risk))
+  
+  return(risk)
+}
+
+#' Run a full simulation step for a given turn
+#'
+#' @param game_state The current game state
+#' @param player_decisions List of all player decisions for this turn
+#' @return Updated game state after simulation
+run_simulation_step <- function(game_state, player_decisions) {
+  # Ensure the game state is valid
+  game_state <- validate_game_state(game_state)
+  
+  # Process market conditions
+  market_condition <- game_state$market_conditions$market_condition
+  
+  # Initialize results if they don't exist
+  if (is.null(game_state$results)) {
+    game_state$results <- list()
+  }
+  
+  # Process each player's decisions
+  results <- list()
+  
+  for (player_id in names(player_decisions)) {
+    # Validate player decisions
+    decisions <- validate_player_decisions(player_decisions[[player_id]])
+    
+    # Process premium adjustments
+    premium_results <- process_premium_decisions(decisions$premium_adjustments, game_state)
+    
+    # Process investment decisions
+    investment_results <- process_investment_decisions(decisions$investments, game_state)
+    
+    # Process risk management decisions
+    risk_results <- process_risk_decisions(decisions$risk_management, game_state)
+    
+    # Calculate overall financial results
+    financial_results <- calculate_financial_results(premium_results, investment_results, risk_results, game_state)
+    
+    # Store results for this player
+    results[[player_id]] <- list(
+      premium_results = premium_results,
+      investment_results = investment_results,
+      risk_results = risk_results,
+      financial_results = financial_results
+    )
+  }
+  
+  # Store results in game state
+  game_state$results <- results
+  
+  # Update market conditions for next turn
+  game_state$market_conditions$market_condition <- update_market_conditions(market_condition, results)
+  
+  # Generate random events for next turn
+  game_state$events <- generate_events(game_state)
+  
+  return(game_state)
+}
+
+#' Process premium decisions for a player
+#'
+#' @param premium_adjustments The player's premium adjustment decisions
+#' @param game_state The current game state
+#' @return Results of premium decisions
+process_premium_decisions <- function(premium_adjustments, game_state) {
+  # Placeholder implementation
+  return(list(
+    volume = sample(1000:5000, 1),
+    revenue = sample(10000:100000, 1),
+    loss_ratio = runif(1, 0.6, 1.1)
+  ))
+}
+
+#' Process investment decisions for a player
+#'
+#' @param investments The player's investment allocation decisions
+#' @param game_state The current game state
+#' @return Results of investment decisions
+process_investment_decisions <- function(investments, game_state) {
+  # Placeholder implementation
+  return(list(
+    return_rate = runif(1, -0.05, 0.15),
+    total_return = sample(1000:50000, 1),
+    risk_adjusted_return = runif(1, -0.02, 0.1)
+  ))
+}
+
+#' Process risk management decisions for a player
+#'
+#' @param risk_management The player's risk management decisions
+#' @param game_state The current game state
+#' @return Results of risk management decisions
+process_risk_decisions <- function(risk_management, game_state) {
+  # Placeholder implementation
+  return(list(
+    risk_reduction = runif(1, 0, 0.3),
+    cost = sample(5000:20000, 1),
+    effectiveness = runif(1, 0.5, 1.0)
+  ))
+}
+
+#' Calculate financial results based on various decision outcomes
+#'
+#' @param premium_results Results from premium decisions
+#' @param investment_results Results from investment decisions
+#' @param risk_results Results from risk management decisions
+#' @param game_state The current game state
+#' @return Overall financial results
+calculate_financial_results <- function(premium_results, investment_results, risk_results, game_state) {
+  # Calculate revenue
+  revenue <- premium_results$revenue
+  
+  # Calculate investment income
+  investment_income <- investment_results$total_return
+  
+  # Calculate claims
+  claims <- premium_results$revenue * premium_results$loss_ratio
+  
+  # Calculate expenses (including risk management costs)
+  expenses <- risk_results$cost + 0.1 * revenue  # Assume 10% of revenue goes to general expenses
+  
+  # Calculate profit
+  profit <- revenue + investment_income - claims - expenses
+  
+  # Calculate combined ratio
+  combined_ratio <- calculate_combined_ratio(revenue, claims, expenses)
+  
+  return(list(
+    revenue = revenue,
+    investment_income = investment_income,
+    claims = claims,
+    expenses = expenses,
+    profit = profit,
+    combined_ratio = combined_ratio,
+    return_on_equity = profit / (revenue * 0.5)  # Simplified ROE calculation
+  ))
+}
+
+#' Update market conditions based on current state and results
+#'
+#' @param current_condition The current market condition
+#' @param results All player results
+#' @return Updated market condition
+update_market_conditions <- function(current_condition, results) {
+  # Simple random walk with mean reversion
+  random_factor <- runif(1, -0.1, 0.1)
+  mean_reversion <- 0.1 * (0.5 - current_condition)  # Revert toward neutral (0.5)
+  
+  new_condition <- current_condition + random_factor + mean_reversion
+  
+  # Ensure the condition stays between 0 and 1
+  new_condition <- max(0, min(1, new_condition))
+  
+  return(new_condition)
+}
+
+#' Generate random events based on game state
+#'
+#' @param game_state The current game state
+#' @return List of events
+generate_events <- function(game_state) {
+  events <- list()
+  
+  # Chance of catastrophe events
+  regions <- c("Iowa", "Georgia", "Florida")
+  
+  for (region in regions) {
+    prob <- game_state$parameters$catastrophe_probability[[region]]
+    
+    if (runif(1) < prob) {
+      # Generate a catastrophe event
+      event <- list(
+        type = "catastrophe",
+        region = region,
+        description = generate_catastrophe_description(region),
+        magnitude = runif(1, 0.1, 1.0),
+        timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S")
+      )
+      
+      events[[length(events) + 1]] <- event
+    }
+  }
+  
+  # Regulatory events
+  for (region in regions) {
+    strictness <- game_state$parameters$regulator_strictness[[region]]
+    
+    if (runif(1) < strictness * 0.2) {
+      # Generate a regulatory event
+      event <- list(
+        type = "regulatory",
+        region = region,
+        description = generate_regulatory_description(region, strictness),
+        magnitude = strictness * runif(1, 0.5, 1.0),
+        timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S")
+      )
+      
+      events[[length(events) + 1]] <- event
+    }
+  }
+  
+  # Market events (general events affecting all players)
+  if (runif(1) < 0.3) {
+    event <- list(
+      type = "market",
+      region = "all",
+      description = generate_market_description(game_state$market_conditions$market_condition),
+      magnitude = runif(1, 0.1, 0.5),
+      timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S")
+    )
+    
+    events[[length(events) + 1]] <- event
+  }
+  
+  return(c(game_state$events, events))
+}
+
+#' Generate a description for a catastrophe event
+#'
+#' @param region The affected region
+#' @return Description string
+generate_catastrophe_description <- function(region) {
+  catastrophes <- list(
+    Iowa = c(
+      "Severe flooding along the Mississippi River",
+      "Tornado outbreak in eastern counties",
+      "Drought affecting agricultural areas"
+    ),
+    Georgia = c(
+      "Hurricane makes landfall on coastal areas",
+      "Severe thunderstorms cause widespread damage",
+      "Flooding in metropolitan Atlanta"
+    ),
+    Florida = c(
+      "Major hurricane hits southern peninsula",
+      "Tropical storm causes coastal flooding",
+      "Sinkholes reported in central region"
+    )
+  )
+  
+  return(sample(catastrophes[[region]], 1))
+}
+
+#' Generate a description for a regulatory event
+#'
+#' @param region The affected region
+#' @param strictness The regulatory strictness
+#' @return Description string
+generate_regulatory_description <- function(region, strictness) {
+  if (strictness > 0.7) {
+    # Strict regulations
+    descriptions <- c(
+      paste("New rate caps implemented in", region),
+      paste("Enhanced consumer protection laws in", region),
+      paste("Stricter solvency requirements in", region)
+    )
+  } else {
+    # Moderate regulations
+    descriptions <- c(
+      paste("Regulatory review of pricing practices in", region),
+      paste("New filing requirements in", region),
+      paste("Updated consumer disclosure rules in", region)
+    )
+  }
+  
+  return(sample(descriptions, 1))
+}
+
+#' Generate a description for a market event
+#'
+#' @param market_condition The current market condition
+#' @return Description string
+generate_market_description <- function(market_condition) {
+  if (market_condition > 0.7) {
+    # Favorable market
+    descriptions <- c(
+      "Stock market reaches new high",
+      "Interest rates increase, boosting investment income",
+      "Economic growth accelerates"
+    )
+  } else if (market_condition < 0.3) {
+    # Unfavorable market
+    descriptions <- c(
+      "Market correction affects investment portfolios",
+      "Interest rates fall to historic lows",
+      "Economic slowdown affects consumer spending"
+    )
+  } else {
+    # Neutral market
+    descriptions <- c(
+      "Minor fluctuations in financial markets",
+      "Moderate economic indicators released",
+      "Steady market conditions continue"
+    )
+  }
+  
+  return(sample(descriptions, 1))
 } 

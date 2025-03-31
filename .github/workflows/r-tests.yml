@@ -1,0 +1,63 @@
+name: R Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: rocker/shiny:latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Install system dependencies
+      run: |
+        apt-get update && apt-get install -y --no-install-recommends \
+          chromium-driver \
+          libcurl4-openssl-dev \
+          libssl-dev \
+          libxml2-dev
+    
+    - name: Install renv
+      run: |
+        install.packages('renv')
+      shell: Rscript {0}
+      
+    - name: Cache renv packages
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.local/share/renv
+          renv/library
+        key: ${{ runner.os }}-renv-${{ hashFiles('renv.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-renv-
+    
+    - name: Restore renv environment
+      run: |
+        renv::restore()
+      shell: Rscript {0}
+    
+    - name: Run tests
+      run: |
+        # Start Shiny app in background
+        Rscript -e "options('shiny.port'=3838); future::plan('multiprocess'); app <- shiny::runApp('.', port=3838, launch.browser=FALSE)" &
+        APP_PID=$!
+        
+        # Wait for the app to start
+        sleep 10
+        
+        # Run R unit tests
+        Rscript -e "testthat::test_dir('tests/testthat', reporter=testthat::SummaryReporter)"
+        TEST_EXIT_CODE=$?
+        
+        # Kill the Shiny app
+        kill $APP_PID
+        
+        # Return the test exit code
+        exit $TEST_EXIT_CODE 
