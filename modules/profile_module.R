@@ -25,8 +25,18 @@ profileUI <- function(id) {
               textInput(ns("username"), "Username:", 
                        placeholder = "Enter your username"),
               
-              selectInput(ns("secondaryMajor"), "Secondary Major:", 
-                         choices = c("Finance", "Actuarial Science", "Business Analytics", "Marketing", "Management"))
+              div(
+                title = "Your secondary major affects your starting skills. Hover over each option to see its impact.",
+                selectInput(ns("secondaryMajor"), "Secondary Major:", 
+                         choices = c("Finance" = "Finance", 
+                                    "Actuarial Science" = "Actuarial Science", 
+                                    "Business Analytics" = "Business Analytics", 
+                                    "Marketing" = "Marketing", 
+                                    "Management" = "Management"))
+              ),
+              
+              # Add description for each major option
+              div(id = ns("majorDescription"), class = "description-box")
             )
           )
         ),
@@ -34,11 +44,29 @@ profileUI <- function(id) {
           div(class = "executive-card",
             h3("Education"),
             div(class = "form-group",
-              selectInput(ns("gradSchool"), "Graduate School Option:", 
-                         choices = c("MBA", "MS in Risk Management", "MS in Finance", "MS in Actuarial Science", "PhD")),
+              div(
+                title = "Your graduate degree affects your specialized skills. Hover over each option to see its impact.",
+                selectInput(ns("gradSchool"), "Graduate School Option:", 
+                         choices = c("MBA" = "MBA", 
+                                    "MS in Risk Management" = "MS in Risk Management", 
+                                    "MS in Finance" = "MS in Finance", 
+                                    "MS in Actuarial Science" = "MS in Actuarial Science", 
+                                    "PhD" = "PhD"))
+              ),
               
-              selectInput(ns("university"), "University:", 
-                         choices = c("Wisconsin", "Wharton", "Chicago", "Stanford", "Harvard"))
+              # Add description for each grad school option
+              div(id = ns("gradSchoolDescription"), class = "description-box"),
+              
+              div(
+                title = "Your university provides regional advantages and network benefits. Hover over each option to see its impact.",
+                selectInput(ns("university"), "University:", 
+                         choices = c("University of Iowa" = "University of Iowa", 
+                                    "Florida State University" = "Florida State University", 
+                                    "University of Georgia" = "University of Georgia"))
+              ),
+              
+              # Add description for each university option
+              div(id = ns("universityDescription"), class = "description-box")
             )
           )
         )
@@ -142,31 +170,44 @@ profileServer <- function(id, userProfile) {
       ),
       
       # University impacts
-      Wisconsin = list(
+      "University of Iowa" = list(
         investing = 1,
         riskManagement = 2,
         marketing = 1
       ),
-      Wharton = list(
-        investing = 3,
+      "Florida State University" = list(
+        investing = 2,
         riskManagement = 1,
         marketing = 1
       ),
-      Chicago = list(
+      "University of Georgia" = list(
         investing = 2,
         riskManagement = 2,
         marketing = 1
-      ),
-      Stanford = list(
-        investing = 2,
-        riskManagement = 1,
-        marketing = 2
-      ),
-      Harvard = list(
-        investing = 2,
-        riskManagement = 1,
-        marketing = 2
       )
+    )
+    
+    # Add descriptions for each option
+    majorDescriptions <- list(
+      Finance = "Finance specialization enhances your investing skills significantly (+3), with moderate improvements to risk management (+2) and slight marketing benefits (+1).",
+      "Actuarial Science" = "Actuarial Science provides strong risk management capabilities (+3), with minor investing benefits (+1) but no marketing advantages.",
+      "Business Analytics" = "Business Analytics offers balanced skill development across investing (+2), risk management (+2), and marketing (+2).",
+      Marketing = "Marketing specialization maximizes your marketing abilities (+3), with a slight improvement in risk management (+1) but no investment advantages.",
+      Management = "Management provides modest skills across all areas with better marketing focus (+2), and basic investing (+1) and risk management (+1) capabilities."
+    )
+    
+    gradSchoolDescriptions <- list(
+      MBA = "An MBA provides good all-around business knowledge with strong investing (+2) and marketing skills (+2), and basic risk management (+1).",
+      "MS in Risk Management" = "MS in Risk Management maximizes your risk assessment capabilities (+3), with minor investing knowledge (+1) but no marketing advantages.",
+      "MS in Finance" = "MS in Finance significantly enhances your investment expertise (+3) and risk management (+2), but offers no marketing benefits.",
+      "MS in Actuarial Science" = "MS in Actuarial Science provides excellent risk management skills (+3) with basic investing knowledge (+1) but no marketing advantages.",
+      PhD = "A PhD offers advanced analytical skills with strong investing (+2) and risk management (+2) capabilities, but no marketing benefits."
+    )
+    
+    universityDescriptions <- list(
+      "University of Iowa" = "University of Iowa provides solid risk management education (+2) with basic investing (+1) and marketing (+1) skills. Regional strength in Iowa.",
+      "Florida State University" = "Florida State University offers strong investment education (+2) with basic risk management (+1) and marketing (+1) skills. Regional strength in Florida.",
+      "University of Georgia" = "University of Georgia provides balanced training with good investing (+2) and risk management (+2) skills and basic marketing (+1). Regional strength in Georgia."
     )
     
     # Function to calculate skill impact
@@ -222,11 +263,9 @@ profileServer <- function(id, userProfile) {
       )
       
       universityMultiplier <- switch(university,
-        "Wisconsin" = 1.05,
-        "Wharton" = 1.2,
-        "Chicago" = 1.15,
-        "Stanford" = 1.15,
-        "Harvard" = 1.2,
+        "University of Iowa" = 1.05,
+        "Florida State University" = 1.2,
+        "University of Georgia" = 1.2,
         1.0
       )
       
@@ -268,21 +307,17 @@ profileServer <- function(id, userProfile) {
       )
       
       universityAdvantage <- switch(university,
-        "Wisconsin" = "Strong actuarial connections",
-        "Wharton" = "Elite investment network",
-        "Chicago" = "Advanced risk modeling",
-        "Stanford" = "Innovation and tech advantage",
-        "Harvard" = "Executive leadership network",
+        "University of Iowa" = "Strong actuarial connections",
+        "Florida State University" = "Elite investment network",
+        "University of Georgia" = "Executive leadership network",
         "None"
       )
       
       # Determine regional strength
       regionalStrength <- switch(university,
-        "Wisconsin" = "Iowa",
-        "Wharton" = "Georgia",
-        "Chicago" = "Iowa",
-        "Stanford" = "Florida",
-        "Harvard" = "Georgia",
+        "University of Iowa" = "Iowa",
+        "Florida State University" = "Florida",
+        "University of Georgia" = "Georgia",
         "None"
       )
       
@@ -293,6 +328,89 @@ profileServer <- function(id, userProfile) {
         regionalStrength = regionalStrength
       ))
     }
+    
+    # Create skill impact visualization
+    renderSkillVisualization <- function(skill_type, skill_value) {
+      sprintf(
+        '<div class="skill-bar"><span>%s: </span><div class="progress">
+         <div class="progress-bar bg-info" role="progressbar" style="width: %d%%;" 
+         aria-valuenow="%d" aria-valuemin="0" aria-valuemax="10">%d/10</div>
+         </div></div>',
+        skill_type, skill_value * 10, skill_value, skill_value
+      )
+    }
+    
+    # Update descriptions when options change
+    observeEvent(input$secondaryMajor, {
+      if (input$secondaryMajor %in% names(majorDescriptions)) {
+        description <- majorDescriptions[[input$secondaryMajor]]
+        
+        # Create skill impact visualization
+        skillImpact <- skillImpacts[[input$secondaryMajor]]
+        investing_viz <- renderSkillVisualization("Investing", skillImpact$investing)
+        risk_viz <- renderSkillVisualization("Risk Management", skillImpact$riskManagement)
+        marketing_viz <- renderSkillVisualization("Marketing", skillImpact$marketing)
+        
+        html_content <- paste0(
+          '<div class="option-description">', description, '</div>',
+          '<div class="option-skills">', investing_viz, risk_viz, marketing_viz, '</div>'
+        )
+        
+        shinyjs::html("majorDescription", html_content)
+        shinyjs::show("majorDescription")
+      } else {
+        shinyjs::hide("majorDescription")
+      }
+    })
+    
+    observeEvent(input$gradSchool, {
+      if (input$gradSchool %in% names(gradSchoolDescriptions)) {
+        description <- gradSchoolDescriptions[[input$gradSchool]]
+        
+        # Create skill impact visualization
+        skillImpact <- skillImpacts[[input$gradSchool]]
+        investing_viz <- renderSkillVisualization("Investing", skillImpact$investing)
+        risk_viz <- renderSkillVisualization("Risk Management", skillImpact$riskManagement)
+        marketing_viz <- renderSkillVisualization("Marketing", skillImpact$marketing)
+        
+        html_content <- paste0(
+          '<div class="option-description">', description, '</div>',
+          '<div class="option-skills">', investing_viz, risk_viz, marketing_viz, '</div>'
+        )
+        
+        shinyjs::html("gradSchoolDescription", html_content)
+        shinyjs::show("gradSchoolDescription")
+      } else {
+        shinyjs::hide("gradSchoolDescription")
+      }
+    })
+    
+    observeEvent(input$university, {
+      if (input$university %in% names(universityDescriptions)) {
+        description <- universityDescriptions[[input$university]]
+        
+        # Create skill impact visualization
+        skillImpact <- skillImpacts[[input$university]]
+        investing_viz <- renderSkillVisualization("Investing", skillImpact$investing)
+        risk_viz <- renderSkillVisualization("Risk Management", skillImpact$riskManagement)
+        marketing_viz <- renderSkillVisualization("Marketing", skillImpact$marketing)
+        
+        # Get regional strength
+        market_impact <- calculateMarketImpact(input$secondaryMajor, input$gradSchool, input$university)
+        regional_strength <- paste0("<div><strong>Regional Strength:</strong> ", market_impact$regionalStrength, "</div>")
+        
+        html_content <- paste0(
+          '<div class="option-description">', description, '</div>',
+          '<div class="option-skills">', investing_viz, risk_viz, marketing_viz, '</div>',
+          regional_strength
+        )
+        
+        shinyjs::html("universityDescription", html_content)
+        shinyjs::show("universityDescription")
+      } else {
+        shinyjs::hide("universityDescription")
+      }
+    })
     
     # Preview impact of choices
     observeEvent(input$previewImpactBtn, {

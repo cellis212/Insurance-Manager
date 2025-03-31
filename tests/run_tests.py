@@ -47,6 +47,8 @@ def run_tests():
     """Run the enhanced Selenium tests"""
     logger.info("Starting enhanced Python Selenium tests...")
     
+    all_passed = True
+    
     try:
         # Import the test module
         sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -58,12 +60,44 @@ def run_tests():
         # Run tests
         result = unittest.TextTestRunner(verbosity=2).run(test_suite)
         
-        # Return True if all tests passed
-        return result.wasSuccessful()
+        # Check result
+        if not result.wasSuccessful():
+            all_passed = False
     
     except Exception as e:
-        logger.error(f"Error running tests: {e}")
-        return False
+        logger.error(f"Error running enhanced Selenium tests: {e}")
+        all_passed = False
+    
+    # Run the profile tooltip test
+    logger.info("Starting profile tooltip test...")
+    try:
+        # Get script path
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        tooltip_test_path = os.path.join(script_dir, "profile_tooltip_test.py")
+        
+        # Run the profile tooltip test
+        result = subprocess.run([sys.executable, tooltip_test_path], 
+                               capture_output=True, text=True)
+        
+        # Log output
+        if result.stdout:
+            logger.info(f"Tooltip test output:\n{result.stdout}")
+        if result.stderr:
+            logger.error(f"Tooltip test errors:\n{result.stderr}")
+        
+        # Check result
+        if result.returncode != 0:
+            logger.error("Profile tooltip test failed")
+            all_passed = False
+        else:
+            logger.info("Profile tooltip test passed")
+    
+    except Exception as e:
+        logger.error(f"Error running profile tooltip test: {e}")
+        all_passed = False
+    
+    # Return True if all tests passed
+    return all_passed
 
 if __name__ == "__main__":
     # Run tests and exit with appropriate status code

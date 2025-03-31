@@ -262,3 +262,182 @@ h2, h3, h4 {
     font-size: 1.6em;
   }
 } 
+
+/* Auction Module Styling */
+.auction-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.asset-card {
+  background-color: #1D1D1D;
+  border: 1px solid #3D3D3D;
+  border-radius: 5px;
+  padding: 15px;
+  width: 100%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.asset-card:hover {
+  border-color: #00AEEF;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  transform: translateY(-3px);
+}
+
+.asset-card h4 {
+  margin-top: 0;
+  color: #FFF;
+  border-bottom: none;
+}
+
+.asset-description {
+  color: #CCC;
+  font-size: 0.9em;
+  margin-bottom: 15px;
+}
+
+.asset-details {
+  margin-bottom: 15px;
+}
+
+.asset-label {
+  font-weight: 600;
+  color: #00AEEF;
+  display: inline-block;
+  width: 120px;
+}
+
+.asset-value {
+  color: #FFF;
+}
+
+.auction-utility-display {
+  background-color: #1D1D1D;
+  border: 1px solid #3D3D3D;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.auction-utility-display h4 {
+  margin-top: 0;
+  color: #FFF;
+  border-bottom: 1px solid #3D3D3D;
+  padding-bottom: 8px;
+}
+
+.utility-value {
+  font-size: 1.5em;
+  font-weight: 600;
+  color: #28A745;
+}
+
+/* DataTable styling for auction history */
+.dataTables_wrapper {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #1D1D1D;
+  border-radius: 5px;
+  border: 1px solid #3D3D3D;
+}
+
+.dataTables_length select,
+.dataTables_filter input {
+  background-color: #333;
+  color: #FFF;
+  border: 1px solid #3D3D3D;
+}
+
+.dataTables_info,
+.dataTables_paginate {
+  color: #CCC !important;
+}
+
+.paginate_button {
+  color: #00AEEF !important;
+}
+
+.paginate_button.current {
+  background: #00AEEF !important;
+  color: #FFF !important;
+  border: 1px solid #00AEEF !important;
+}
+
+/* Media queries for auction components */
+@media (min-width: 768px) {
+  .asset-card {
+    width: calc(50% - 10px);
+  }
+} 
+
+/* Description box styling for tooltips */
+.description-box {
+  background-color: #1D1D1D;
+  border: 1px solid #3D3D3D;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  display: none;
+  transition: all 0.3s ease;
+}
+
+.description-box:hover {
+  border-color: #00AEEF;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.option-description {
+  color: #F0F0F0;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.option-skills {
+  margin-top: 10px;
+}
+
+.skill-bar {
+  margin-bottom: 8px;
+}
+
+.skill-bar span {
+  display: inline-block;
+  width: 120px;
+  color: #00AEEF;
+}
+
+.progress {
+  display: inline-flex;
+  width: calc(100% - 130px);
+  height: 20px;
+  background-color: #333;
+  border-radius: 3px;
+  margin-bottom: 0;
+  vertical-align: middle;
+}
+
+/* Enhanced tooltips for hover effects */
+[title]:hover::before {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 5px 10px;
+  background-color: #00AEEF;
+  color: white;
+  border-radius: 3px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+/* Ensure select inputs have proper spacing */
+.selectize-control {
+  margin-bottom: 15px;
+} 
