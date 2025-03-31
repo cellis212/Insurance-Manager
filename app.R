@@ -15,6 +15,7 @@ source("backend/simulation.R")
 source("backend/data_ops.R")
 source("backend/admin_ui.R")
 source("modules/profile_module.R")
+source("modules/advanced_analytics_module.R")
 
 # UI Definition
 ui <- fluidPage(
@@ -123,7 +124,11 @@ server <- function(input, output, session) {
   
   observeEvent(input$analyticsBtn, {
     output$mainContent <- renderUI({
-      analyticsDashboardUI()
+      if (input$isAdmin && exists("advancedAnalyticsUI")) {
+        advancedAnalyticsUI("advancedAnalytics")
+      } else {
+        analyticsDashboardUI()
+      }
     })
   })
   
@@ -266,6 +271,11 @@ server <- function(input, output, session) {
     tagList(
       h2("Analytics Dashboard"),
       p("View key performance metrics for your insurance company."),
+      
+      div(class = "analytics-header",
+        actionButton("viewAdvancedAnalyticsBtn", "View Advanced Analytics", class = "btn-info"),
+        hr()
+      ),
       
       # KPI Cards
       fluidRow(
@@ -515,6 +525,18 @@ server <- function(input, output, session) {
     } else {
       showNotification("Error saving decisions. Please try again.", type = "error")
     }
+  })
+  
+  # Initialize advanced analytics module if it exists
+  if (exists("advancedAnalyticsServer")) {
+    advancedAnalyticsServer("advancedAnalytics", userProfile, gameData)
+  }
+  
+  # View advanced analytics button
+  observeEvent(input$viewAdvancedAnalyticsBtn, {
+    output$mainContent <- renderUI({
+      advancedAnalyticsUI("advancedAnalytics")
+    })
   })
   
   # Initialize admin module
