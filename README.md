@@ -71,13 +71,40 @@ The game features:
 
 ## Testing
 
-The project includes automated tests using RSelenium. To run the tests:
+The project includes two testing approaches:
+
+### R Testing
+
+For R-specific testing, we use testthat:
 
 ```
-Rscript tests/selenium_tests.R
+Rscript -e "testthat::test_dir('tests/testthat')"
 ```
 
-Note: You need to have the application running on port 3838 and Chrome WebDriver installed for the tests to work properly.
+### Python Selenium Testing
+
+For UI testing, we use Python with Selenium:
+
+1. Activate the Python virtual environment:
+   ```
+   # On Windows
+   .\venv\Scripts\activate
+   
+   # On macOS/Linux
+   source venv/bin/activate
+   ```
+
+2. Install the required Python packages:
+   ```
+   pip install -r requirements.txt
+   ```
+
+3. Run the Selenium tests:
+   ```
+   python tests/comprehensive_selenium_test.py
+   ```
+
+Note: You need to have the application running on port 3839 and a compatible browser driver installed for the tests to work properly.
 
 ## Administration
 
