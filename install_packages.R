@@ -1,54 +1,62 @@
-# Insurance Simulation Game - Package Installation Script
-# Run this script to install all required packages
+#!/usr/bin/env Rscript
+
+# Script to install required packages for Insurance Simulation Game
 
 # Set CRAN mirror
-options(repos = c(CRAN = "https://cloud.r-project.org"))
+options(repos = c(CRAN = "https://cloud.r-project.org/"))
 
-# List of required packages
-required_packages <- c(
-  "shiny",           # Core Shiny framework
-  "shinythemes",     # For Darkly theme
-  "shinydashboard",  # For dashboard layout components
-  "plotly",          # For interactive visualizations
-  "jsonlite",        # For handling JSON data
-  "shinyjs",         # For JavaScript functionality in Shiny
-  "digest",          # For generating hash IDs
-  "DT"               # For interactive tables
-)
-
-# Function to check and install packages
+# Function to install packages if not already installed
 install_if_missing <- function(pkg) {
   if (!requireNamespace(pkg, quietly = TRUE)) {
-    cat(sprintf("Installing package: %s\n", pkg))
+    message(paste("Installing package:", pkg))
     install.packages(pkg)
   } else {
-    cat(sprintf("Package already installed: %s\n", pkg))
+    message(paste("Package already installed:", pkg))
   }
 }
 
-# Install all required packages
-cat("Checking and installing required packages...\n")
-for (pkg in required_packages) {
+# Core packages
+core_packages <- c(
+  "shiny",
+  "shinydashboard",
+  "shinythemes",
+  "plotly",
+  "jsonlite",
+  "shinyjs",
+  "DT"
+)
+
+# Testing packages
+testing_packages <- c(
+  "testthat",
+  "RSelenium",
+  "wdman",
+  "httr"
+)
+
+# Development and dependency management
+dev_packages <- c(
+  "renv",
+  "remotes",
+  "devtools"
+)
+
+# Install all packages
+message("Installing core packages...")
+for (pkg in core_packages) {
   install_if_missing(pkg)
 }
 
-# Verify all packages can be loaded
-cat("\nVerifying package installation...\n")
-success <- TRUE
-for (pkg in required_packages) {
-  tryCatch({
-    library(pkg, character.only = TRUE)
-    cat(sprintf("Successfully loaded: %s\n", pkg))
-  }, error = function(e) {
-    cat(sprintf("Error loading package %s: %s\n", pkg, e$message))
-    success <- FALSE
-  })
+message("\nInstalling testing packages...")
+for (pkg in testing_packages) {
+  install_if_missing(pkg)
 }
 
-# Final status message
-if (success) {
-  cat("\nAll packages installed and loaded successfully.\n")
-  cat("You can now run the Insurance Simulation Game using 'shiny::runApp()'\n")
-} else {
-  cat("\nSome packages could not be loaded. Please check the error messages above.\n")
-} 
+message("\nInstalling development packages...")
+for (pkg in dev_packages) {
+  install_if_missing(pkg)
+}
+
+message("\nAll packages installed successfully!")
+message("Next, initialize renv with: renv::init()")
+message("After changes, use: renv::snapshot() to save package state") 

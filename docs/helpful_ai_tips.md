@@ -46,6 +46,28 @@ This document contains tips and solutions for common issues that may arise when 
    - Consider using executeScript to manipulate elements via JavaScript
    - Example: `remDr$executeScript("document.getElementById('mySlider').value = 75;")`
 
+## Using RSelenium with Insurance Simulation Game
+
+1. **Prerequisites**
+   - Java must be installed (required for Selenium Server)
+   - Chrome browser must be installed (or Firefox with appropriate configuration)
+   - The Shiny app must be running at http://127.0.0.1:3838 before tests start
+
+2. **Running Tests**
+   - Start the Shiny app in one terminal: `& 'C:\Program Files\R\R-4.4.1\bin\Rscript.exe' -e "shiny::runApp('.', port=3838)"`
+   - Run the tests in another terminal: `& 'C:\Program Files\R\R-4.4.1\bin\Rscript.exe' tests/selenium_tests.R`
+
+3. **Troubleshooting Tests**
+   - If tests fail, check selenium_test_log.txt for detailed errors
+   - Look at screenshots in the screenshots/ directory to see what the browser state was when a test failed
+   - If you get "Could not start WebDriver" errors, make sure Java is installed and in your PATH
+   - For simpler testing without RSelenium, use `manual_api_test.R` instead
+
+4. **Session Handling**
+   - RSelenium tests maintain a browser session across test cases
+   - Make sure tests are organized in logical sequence as each test depends on the state from previous tests
+   - Use the `client$deleteAllCookies()` command if you need to reset the session state
+
 ## Data and State Management
 
 1. **Handling Game State**
