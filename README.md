@@ -17,6 +17,15 @@ The game features:
 - Turn-based multiplayer mode supporting up to 200 players
 - Administrator interface for educators to control simulation parameters
 
+## Recent Changes
+
+### Version Updates
+
+#### 2025-03-31 Update
+- **Added Interactive Tooltips**: Added detailed tooltips to the executive profile setup page that show how each choice (major, graduate school, university) affects player skills and abilities. When selecting different options, users now see full explanations with visual skill bars.
+- **University List Correction**: Updated the university options to specifically include only University of Iowa, Florida State University, and University of Georgia to match the simulation's regional focus.
+- **New Tooltip Testing**: Added a comprehensive Selenium test (`profile_tooltip_test.py`) to verify tooltip functionality and ensure descriptions display correctly.
+
 ## Getting Started
 
 ### Prerequisites
@@ -101,6 +110,12 @@ python tests/run_tests.py
 
 # Or run test directly
 python tests/enhanced_python_selenium.py
+```
+
+**Tooltip Testing:**
+```
+# Test tooltip functionality specifically
+python tests/profile_tooltip_test.py
 ```
 
 The enhanced tests include:
