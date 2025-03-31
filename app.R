@@ -8,15 +8,18 @@ library(shinythemes)
 library(shinydashboard)
 library(plotly)
 library(jsonlite)
+library(shinyjs)
 
 # Source backend modules
 source("backend/simulation.R")
 source("backend/data_ops.R")
 source("backend/admin_ui.R")
+source("modules/profile_module.R")
 
 # UI Definition
 ui <- fluidPage(
   theme = shinytheme("darkly"),
+  useShinyjs(),
   
   # Include custom CSS
   includeCSS("www/custom.css"),
@@ -54,7 +57,7 @@ ui <- fluidPage(
       
       hr(),
       conditionalPanel(
-        condition = "input.profileBtn > 0",
+        condition = "input.profileBtn > 0 || output.profileInitialized == true",
         h4("Executive Profile"),
         uiOutput("profileSummary")
       ),
@@ -79,7 +82,10 @@ server <- function(input, output, session) {
     gradSchool = NULL,
     university = NULL,
     username = NULL,
-    player_id = NULL
+    player_id = NULL,
+    skills = NULL,
+    financial = NULL,
+    market = NULL
   )
   
   gameData <- reactiveValues(
@@ -99,7 +105,7 @@ server <- function(input, output, session) {
   # Handle navigation button clicks
   observeEvent(input$profileBtn, {
     output$mainContent <- renderUI({
-      profileSetupUI()
+      profileUI("playerProfile")
     })
   })
   
@@ -130,39 +136,20 @@ server <- function(input, output, session) {
   # Default view on startup
   output$mainContent <- renderUI({
     if (!userProfile$initialized) {
-      profileSetupUI()
+      profileUI("playerProfile")
     } else {
       inboxUI()
     }
   })
   
-  # Profile setup UI
-  profileSetupUI <- function() {
-    tagList(
-      div(class = "profile-setup",
-        h2("Executive Profile Setup"),
-        p("Create your executive identity by selecting your background and education."),
-        
-        textInput("username", "Username:", 
-                 value = userProfile$username,
-                 placeholder = "Enter your username"),
-        
-        selectInput("secondaryMajor", "Secondary Major:", 
-                   choices = c("Finance", "Actuarial Science", "Business Analytics", "Marketing", "Management"),
-                   selected = userProfile$major),
-        
-        selectInput("gradSchool", "Graduate School Option:", 
-                   choices = c("MBA", "MS in Risk Management", "MS in Finance", "MS in Actuarial Science", "PhD"),
-                   selected = userProfile$gradSchool),
-        
-        selectInput("university", "University:", 
-                   choices = c("Wisconsin", "Wharton", "Chicago", "Stanford", "Harvard"),
-                   selected = userProfile$university),
-        
-        actionButton("saveProfile", "Save Profile", class = "btn-primary")
-      )
-    )
-  }
+  # Initialize profile module
+  profileData <- profileServer("playerProfile", userProfile)
+  
+  # Export profile initialization status to UI
+  output$profileInitialized <- reactive({
+    userProfile$initialized
+  })
+  outputOptions(output, "profileInitialized", suspendWhenHidden = FALSE)
   
   # Inbox UI
   inboxUI <- function() {
@@ -348,10 +335,43 @@ server <- function(input, output, session) {
     }
     
     tagList(
-      p(strong("Username: "), userProfile$username),
-      p(strong("Major: "), userProfile$major),
-      p(strong("Grad School: "), userProfile$gradSchool),
-      p(strong("University: "), userProfile$university)
+      div(class = "executive-card",
+        p(class = "executive-detail",
+          span(class = "executive-label", "Username: "), 
+          userProfile$username
+        ),
+        p(class = "executive-detail",
+          span(class = "executive-label", "Major: "), 
+          userProfile$major
+        ),
+        p(class = "executive-detail",
+          span(class = "executive-label", "Grad School: "), 
+          userProfile$gradSchool
+        ),
+        p(class = "executive-detail",
+          span(class = "executive-label", "University: "), 
+          userProfile$university
+        ),
+        
+        # If skills are available, show them
+        if (!is.null(userProfile$skills)) {
+          tagList(
+            hr(),
+            p(class = "executive-detail",
+              span(class = "executive-label", "Investing: "), 
+              paste0(userProfile$skills$investing, "/10")
+            ),
+            p(class = "executive-detail",
+              span(class = "executive-label", "Risk Mgmt: "), 
+              paste0(userProfile$skills$riskManagement, "/10")
+            ),
+            p(class = "executive-detail",
+              span(class = "executive-label", "Marketing: "), 
+              paste0(userProfile$skills$marketing, "/10")
+            )
+          )
+        }
+      )
     )
   })
   
@@ -441,45 +461,6 @@ server <- function(input, output, session) {
       xaxis = list(gridcolor = '#3D3D3D'),
       font = list(color = '#FFFFFF')
     )
-  })
-  
-  # Save profile functionality
-  observeEvent(input$saveProfile, {
-    if (is.null(input$username) || input$username == "") {
-      showNotification("Please enter a username.", type = "error")
-      return()
-    }
-    
-    userProfile$username <- input$username
-    userProfile$major <- input$secondaryMajor
-    userProfile$gradSchool <- input$gradSchool
-    userProfile$university <- input$university
-    userProfile$initialized <- TRUE
-    
-    # Save profile to file
-    profile_data <- list(
-      username = userProfile$username,
-      major = userProfile$major,
-      gradSchool = userProfile$gradSchool,
-      university = userProfile$university,
-      timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S")
-    )
-    
-    success <- save_player_profile(userProfile$username, profile_data)
-    
-    if (success) {
-      showNotification("Profile saved successfully!", type = "message")
-      
-      # Redirect to inbox after profile setup
-      output$mainContent <- renderUI({
-        inboxUI()
-      })
-      
-      # Update player_id
-      userProfile$player_id <- profile_data$player_id
-    } else {
-      showNotification("Error saving profile. Please try again.", type = "error")
-    }
   })
   
   # Save decisions functionality
