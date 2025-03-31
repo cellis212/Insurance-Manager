@@ -1,0 +1,33 @@
+2025-03-31 16:40:20,542 - INFO - ====== WebDriver manager ======
+2025-03-31 16:40:21,663 - INFO - Get LATEST chromedriver version for google-chrome
+2025-03-31 16:40:21,712 - INFO - Get LATEST chromedriver version for google-chrome
+2025-03-31 16:40:21,744 - INFO - There is no [win64] chromedriver "134.0.6998.165" for browser google-chrome "134.0.6998" in cache
+2025-03-31 16:40:21,744 - INFO - Get LATEST chromedriver version for google-chrome
+2025-03-31 16:40:21,833 - INFO - WebDriver version 134.0.6998.165 selected
+2025-03-31 16:40:21,836 - INFO - Modern chrome version https://storage.googleapis.com/chrome-for-testing-public/134.0.6998.165/win32/chromedriver-win32.zip
+2025-03-31 16:40:21,836 - INFO - About to download new driver from https://storage.googleapis.com/chrome-for-testing-public/134.0.6998.165/win32/chromedriver-win32.zip
+2025-03-31 16:40:21,894 - INFO - Driver downloading response is 200
+2025-03-31 16:40:22,258 - INFO - Get LATEST chromedriver version for google-chrome
+2025-03-31 16:40:23,068 - INFO - Driver has been saved in cache [C:\Users\celli\.wdm\drivers\chromedriver\win64\134.0.6998.165]
+2025-03-31 16:40:24,624 - INFO - Starting Advanced Analytics module test
+2025-03-31 16:40:25,632 - INFO - Screenshot saved: screenshots/advanced_analytics/initial_page_20250331_164025.png
+2025-03-31 16:40:25,632 - INFO - Navigated to http://localhost:3839
+2025-03-31 16:40:25,714 - INFO - Enabled admin mode
+2025-03-31 16:40:25,795 - INFO - Clicked on Analytics button
+2025-03-31 16:40:27,143 - INFO - Screenshot saved: screenshots/advanced_analytics/advanced_analytics_loaded_20250331_164026.png
+2025-03-31 16:40:27,143 - INFO - Advanced analytics module loaded
+2025-03-31 16:40:27,205 - INFO - Clicked Generate Forecast button
+2025-03-31 16:40:29,364 - INFO - Screenshot saved: screenshots/advanced_analytics/forecast_tab_20250331_164029.png
+2025-03-31 16:40:29,364 - INFO - Forecast tab tested
+2025-03-31 16:40:29,432 - INFO - Clicked Scenario Analysis tab
+2025-03-31 16:40:29,505 - INFO - Clicked Run Scenario button
+2025-03-31 16:40:31,661 - INFO - Screenshot saved: screenshots/advanced_analytics/scenario_tab_20250331_164031.png
+2025-03-31 16:40:31,661 - INFO - Scenario Analysis tab tested
+2025-03-31 16:40:31,714 - INFO - Clicked Competitive Analysis tab
+2025-03-31 16:40:33,906 - INFO - Screenshot saved: screenshots/advanced_analytics/competitive_tab_20250331_164033.png
+2025-03-31 16:40:33,906 - INFO - Competitive Analysis tab tested
+2025-03-31 16:40:33,970 - INFO - Clicked Trend Analysis tab
+2025-03-31 16:40:36,171 - INFO - Screenshot saved: screenshots/advanced_analytics/trend_tab_20250331_164035.png
+2025-03-31 16:40:36,171 - INFO - Trend Analysis tab tested
+2025-03-31 16:40:36,171 - INFO - Advanced Analytics test completed successfully
+2025-03-31 16:40:38,323 - INFO - Browser closed
