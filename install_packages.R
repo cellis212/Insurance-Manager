@@ -1,6 +1,9 @@
 # Insurance Simulation Game - Package Installation Script
 # Run this script to install all required packages
 
+# Set CRAN mirror
+options(repos = c(CRAN = "https://cloud.r-project.org"))
+
 # List of required packages
 required_packages <- c(
   "shiny",           # Core Shiny framework
