@@ -16,6 +16,7 @@ source("backend/data_ops.R")
 source("backend/admin_ui.R")
 source("modules/profile_module.R")
 source("modules/advanced_analytics_module.R")
+source("modules/auction_module.R")
 
 # UI Definition
 ui <- fluidPage(
@@ -31,21 +32,25 @@ ui <- fluidPage(
   # Sidebar with navigation menu
   sidebarLayout(
     sidebarPanel(
-      h3("Navigation"),
-      actionButton("profileBtn", "Executive Profile", 
-                  icon = icon("user"), 
+      h3("Executive Offices"),
+      actionButton("inboxBtn", "CEO's Office (Inbox)", 
+                  icon = icon("briefcase"), 
                   class = "btn-block"),
       
-      actionButton("inboxBtn", "Inbox", 
-                  icon = icon("envelope"), 
+      actionButton("simCtrlBtn", "Chief Actuary's Office", 
+                  icon = icon("calculator"), 
                   class = "btn-block"),
       
-      actionButton("simCtrlBtn", "Simulation Controls", 
-                  icon = icon("sliders"), 
+      actionButton("riskBtn", "CRO's Office", 
+                  icon = icon("shield-alt"), 
+                  class = "btn-block"),
+      
+      actionButton("auctionBtn", "CFO's Office", 
+                  icon = icon("chart-line"), 
                   class = "btn-block"),
       
       actionButton("analyticsBtn", "Analytics Dashboard", 
-                  icon = icon("chart-line"), 
+                  icon = icon("chart-bar"), 
                   class = "btn-block"),
       
       conditionalPanel(
@@ -61,6 +66,11 @@ ui <- fluidPage(
         condition = "input.profileBtn > 0 || output.profileInitialized == true",
         h4("Executive Profile"),
         uiOutput("profileSummary")
+      ),
+      
+      # Hidden profile button that will be triggered programmatically
+      div(style = "display: none;",
+        actionButton("profileBtn", "Executive Profile", icon = icon("user"))
       ),
       
       checkboxInput("isAdmin", "Enable Admin Mode", value = FALSE)
@@ -122,6 +132,12 @@ server <- function(input, output, session) {
     })
   })
   
+  observeEvent(input$riskBtn, {
+    output$mainContent <- renderUI({
+      riskManagementUI()
+    })
+  })
+  
   observeEvent(input$analyticsBtn, {
     output$mainContent <- renderUI({
       if (input$isAdmin && exists("advancedAnalyticsUI")) {
@@ -129,6 +145,12 @@ server <- function(input, output, session) {
       } else {
         analyticsDashboardUI()
       }
+    })
+  })
+  
+  observeEvent(input$auctionBtn, {
+    output$mainContent <- renderUI({
+      auctionUI("auction")
     })
   })
   
@@ -150,17 +172,20 @@ server <- function(input, output, session) {
   # Initialize profile module
   profileData <- profileServer("playerProfile", userProfile)
   
+  # Initialize auction module
+  auctionData <- auctionServer("auction", userProfile, gameData)
+  
   # Export profile initialization status to UI
   output$profileInitialized <- reactive({
     userProfile$initialized
   })
   outputOptions(output, "profileInitialized", suspendWhenHidden = FALSE)
   
-  # Inbox UI
+  # Inbox UI - CEO's Office
   inboxUI <- function() {
     tagList(
-      h2("Inbox"),
-      p("Messages from C-suite executives will appear here."),
+      h2("CEO's Office - Inbox"),
+      p("Messages from C-suite executives and external stakeholders will appear here."),
       
       # Placeholder for inbox messages
       div(class = "inbox-message",
@@ -182,15 +207,31 @@ server <- function(input, output, session) {
         p(class = "inbox-message-sender", "From: CRO Office"),
         p("We need to discuss our exposure in Florida. Recent hurricane models suggest we may be underpicing our home insurance products in coastal areas."),
         p(class = "inbox-message-time", "Received: 2 days ago at 11:15 AM")
+      ),
+      
+      # New auction-related inbox message
+      div(class = "inbox-message",
+        h4("Asset and Risk Management Auctions Available"),
+        p(class = "inbox-message-sender", "From: CFO and CRO Offices"),
+        p("We have identified several investment opportunities and risk management tools that could strengthen our portfolio and reduce our risk exposure. Visit the CFO's Office to participate in auctions."),
+        p(class = "inbox-message-time", "Received: Today at 10:45 AM"),
+        actionButton("goToAuctionsBtn", "Visit CFO's Office", class = "btn-sm btn-info")
       )
     )
   }
   
-  # Simulation Controls UI
+  # Observer for the "Go to Auctions" button in the inbox
+  observeEvent(input$goToAuctionsBtn, {
+    output$mainContent <- renderUI({
+      auctionUI("auction")
+    })
+  })
+  
+  # Chief Actuary's Office UI
   simulationControlsUI <- function() {
     tagList(
-      h2("Simulation Controls"),
-      p("Set your strategic parameters for the insurance business."),
+      h2("Chief Actuary's Office - Premium Pricing"),
+      p("Set premium rates for different insurance products across regions."),
       
       # Premium rate adjustment sliders
       h3("Premium Adjustment by Line"),
@@ -224,44 +265,79 @@ server <- function(input, output, session) {
         )
       ),
       
-      # Investment portfolio sliders
-      h3("Investment Portfolio Allocation"),
+      # Save button
+      div(style = "margin-top: 20px;",
+        actionButton("savePricingDecisions", "Save Pricing Decisions", class = "btn-primary")
+      )
+    )
+  }
+  
+  # CRO's Office UI
+  riskManagementUI <- function() {
+    tagList(
+      h2("CRO's Office - Risk Management"),
+      p("Manage risk exposure and implement risk mitigation strategies."),
+      
+      # Risk management sliders
+      h3("Risk Management Strategy"),
       fluidRow(
-        column(4, 
+        column(6, 
               div(class = "metric-card",
-                p(class = "metric-title", "Equity Allocation"),
-                span(class = "metric-value", "40"),
-                span(class = "metric-unit", "%"),
-                sliderInput("equitySlider", NULL,
-                           min = 0, max = 100, value = 40, step = 5, post = "%")
-              )
-        ),
-        column(4, 
-              div(class = "metric-card",
-                p(class = "metric-title", "Bond Allocation"),
+                p(class = "metric-title", "Reinsurance Level"),
                 span(class = "metric-value", "50"),
                 span(class = "metric-unit", "%"),
-                sliderInput("bondSlider", NULL,
+                sliderInput("reinsuranceSlider", NULL,
                            min = 0, max = 100, value = 50, step = 5, post = "%")
               )
         ),
-        column(4, 
+        column(6, 
               div(class = "metric-card",
-                p(class = "metric-title", "Cash Allocation"),
-                span(class = "metric-value", "10"),
+                p(class = "metric-title", "Risk Mitigation Investment"),
+                span(class = "metric-value", "5"),
                 span(class = "metric-unit", "%"),
-                sliderInput("cashSlider", NULL,
-                           min = 0, max = 100, value = 10, step = 5, post = "%")
+                sliderInput("riskMitigationSlider", NULL,
+                           min = 1, max = 10, value = 5, step = 1, post = "%")
               )
         )
       ),
       
-      # Validation message for investment allocation
-      htmlOutput("investmentValidation"),
+      h3("Regional Risk Exposure"),
+      fluidRow(
+        column(4, 
+              div(class = "metric-card",
+                p(class = "metric-title", "Iowa"),
+                selectInput("iowaRiskExposure", NULL,
+                           choices = c("Low" = "low", 
+                                      "Medium" = "medium", 
+                                      "High" = "high"),
+                           selected = "medium")
+              )
+        ),
+        column(4, 
+              div(class = "metric-card",
+                p(class = "metric-title", "Georgia"),
+                selectInput("georgiaRiskExposure", NULL,
+                           choices = c("Low" = "low", 
+                                      "Medium" = "medium", 
+                                      "High" = "high"),
+                           selected = "medium")
+              )
+        ),
+        column(4, 
+              div(class = "metric-card",
+                p(class = "metric-title", "Florida"),
+                selectInput("floridaRiskExposure", NULL,
+                           choices = c("Low" = "low", 
+                                      "Medium" = "medium", 
+                                      "High" = "high"),
+                           selected = "medium")
+              )
+        )
+      ),
       
       # Save button
       div(style = "margin-top: 20px;",
-        actionButton("saveDecisions", "Save Decisions", class = "btn-primary")
+        actionButton("saveRiskDecisions", "Save Risk Management Decisions", class = "btn-primary")
       )
     )
   }
@@ -474,16 +550,9 @@ server <- function(input, output, session) {
   })
   
   # Save decisions functionality
-  observeEvent(input$saveDecisions, {
+  observeEvent(input$savePricingDecisions, {
     if (!userProfile$initialized) {
       showNotification("Please set up your profile first.", type = "warning")
-      return()
-    }
-    
-    # Check investment allocation
-    total_investment <- input$equitySlider + input$bondSlider + input$cashSlider
-    if (total_investment != 100) {
-      showNotification("Investment allocation must total 100%.", type = "error")
       return()
     }
     
@@ -505,25 +574,44 @@ server <- function(input, output, session) {
           Georgia = input$healthInsSlider,
           Florida = input$healthInsSlider
         )
-      ),
-      investment = list(
-        equity_allocation = input$equitySlider,
-        bond_allocation = input$bondSlider,
-        cash_allocation = input$cashSlider
-      ),
-      service_quality = 5,  # Default values, would be adjustable in full implementation
-      brand_recognition = 5,
-      bundling_discount = 0,
-      risk_management_quality = 5
+      )
     )
     
     # Save decisions to file
     success <- save_player_decision(userProfile$player_id, decision_data, gameData$currentTurn)
     
     if (success) {
-      showNotification("Decisions saved successfully!", type = "message")
+      showNotification("Pricing decisions saved successfully!", type = "message")
     } else {
-      showNotification("Error saving decisions. Please try again.", type = "error")
+      showNotification("Error saving pricing decisions. Please try again.", type = "error")
+    }
+  })
+  
+  # Save risk management decisions
+  observeEvent(input$saveRiskDecisions, {
+    if (!userProfile$initialized) {
+      showNotification("Please set up your profile first.", type = "warning")
+      return()
+    }
+    
+    # Create risk management data structure
+    risk_data <- list(
+      reinsurance_level = input$reinsuranceSlider,
+      risk_mitigation = input$riskMitigationSlider,
+      regional_exposure = list(
+        Iowa = input$iowaRiskExposure,
+        Georgia = input$georgiaRiskExposure,
+        Florida = input$floridaRiskExposure
+      )
+    )
+    
+    # Save decisions to file
+    success <- save_player_decision(userProfile$player_id, risk_data, gameData$currentTurn)
+    
+    if (success) {
+      showNotification("Risk management decisions saved successfully!", type = "message")
+    } else {
+      showNotification("Error saving risk management decisions. Please try again.", type = "error")
     }
   })
   

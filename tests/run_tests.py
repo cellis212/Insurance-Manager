@@ -96,6 +96,34 @@ def run_tests():
         logger.error(f"Error running profile tooltip test: {e}")
         all_passed = False
     
+    # Run the office navigation test
+    logger.info("Starting office navigation test...")
+    try:
+        # Get script path
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        office_test_path = os.path.join(script_dir, "office_navigation_test.py")
+        
+        # Run the office navigation test
+        result = subprocess.run([sys.executable, office_test_path], 
+                              capture_output=True, text=True)
+        
+        # Log output
+        if result.stdout:
+            logger.info(f"Office navigation test output:\n{result.stdout}")
+        if result.stderr:
+            logger.error(f"Office navigation test errors:\n{result.stderr}")
+        
+        # Check result
+        if result.returncode != 0:
+            logger.error("Office navigation test failed")
+            all_passed = False
+        else:
+            logger.info("Office navigation test passed")
+    
+    except Exception as e:
+        logger.error(f"Error running office navigation test: {e}")
+        all_passed = False
+    
     # Return True if all tests passed
     return all_passed
 
