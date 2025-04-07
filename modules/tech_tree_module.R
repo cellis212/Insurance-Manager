@@ -17,7 +17,8 @@ techTreeUI <- function(id) {
           div(class = "skill-points-display",
             textOutput(ns("availablePoints"), inline = TRUE)
           ),
-          actionButton(ns("earnPointsBtn"), "How to Earn Points", class = "btn-sm btn-info")
+          actionButton(ns("earnPointsBtn"), "How to Earn Points", class = "btn-sm btn-info"),
+          actionButton(ns("viewPointHistoryBtn"), "View Point History", class = "btn-sm btn-info")
         )
       )
     ),
@@ -131,8 +132,65 @@ techTreeServer <- function(id, userProfile, gameData) {
         managementRegulation = 0,
         actuarialScience = 0,
         riskAnalysis = 0
-      )
+      ),
+      pointHistory = list() # New field for tracking point history
     )
+    
+    # On initialization, load skills from storage
+    observe({
+      if (userProfile$initialized && !is.null(userProfile$player_id)) {
+        # Load skills from storage
+        player_skills <- load_player_skills(userProfile$player_id)
+        
+        # Update skill data with loaded values
+        skillData$availablePoints <- player_skills$availablePoints
+        skillData$skills$managementEfficiency <- player_skills$managementEfficiency
+        skillData$skills$managementLeadership <- player_skills$managementLeadership
+        skillData$skills$managementRegulation <- player_skills$managementRegulation
+        skillData$skills$actuarialScience <- player_skills$actuarialScience
+        skillData$skills$riskAnalysis <- player_skills$riskAnalysis
+        
+        # Load point history if it exists
+        if (!is.null(player_skills$pointHistory)) {
+          skillData$pointHistory <- player_skills$pointHistory
+        }
+        
+        # Update UI to reflect loaded skills
+        updateTextInput(session, "managementEfficiencyLevel", 
+                      value = paste0(skillData$skills$managementEfficiency, "/5"))
+        updateTextInput(session, "managementLeadershipLevel", 
+                      value = paste0(skillData$skills$managementLeadership, "/5"))
+        updateTextInput(session, "managementRegulationLevel", 
+                      value = paste0(skillData$skills$managementRegulation, "/5"))
+        updateTextInput(session, "actuarialScienceLevel", 
+                      value = paste0(skillData$skills$actuarialScience, "/5"))
+        updateTextInput(session, "riskAnalysisLevel", 
+                      value = paste0(skillData$skills$riskAnalysis, "/5"))
+      }
+    })
+    
+    # Save skills to storage whenever they change
+    observe({
+      if (userProfile$initialized && !is.null(userProfile$player_id)) {
+        # Create skills object for saving
+        skills_to_save <- list(
+          availablePoints = skillData$availablePoints,
+          managementEfficiency = skillData$skills$managementEfficiency,
+          managementLeadership = skillData$skills$managementLeadership,
+          managementRegulation = skillData$skills$managementRegulation,
+          actuarialScience = skillData$skills$actuarialScience,
+          riskAnalysis = skillData$skills$riskAnalysis,
+          investmentStrategy = 0,
+          productInnovation = 0,
+          dataAnalytics = 0,
+          digitalTransformation = 0,
+          pointHistory = skillData$pointHistory
+        )
+        
+        # Save to storage
+        save_player_skills(userProfile$player_id, skills_to_save)
+      }
+    })
     
     # Display available points
     output$availablePoints <- renderText({
@@ -230,9 +288,97 @@ techTreeServer <- function(id, userProfile, gameData) {
       ))
     })
     
-    # Return skill data for other modules
+    # View point history modal
+    observeEvent(input$viewPointHistoryBtn, {
+      # Create HTML for point history
+      history_html <- ""
+      
+      if (length(skillData$pointHistory) > 0) {
+        history_html <- tags$div(
+          tags$table(class = "table table-striped",
+            tags$thead(
+              tags$tr(
+                tags$th("Date"),
+                tags$th("Event"),
+                tags$th("Points")
+              )
+            ),
+            tags$tbody(
+              lapply(skillData$pointHistory, function(event) {
+                tags$tr(
+                  tags$td(event$date),
+                  tags$td(event$description),
+                  tags$td(paste0("+", event$points))
+                )
+              })
+            )
+          )
+        )
+      } else {
+        history_html <- tags$p("No skill points have been awarded yet.")
+      }
+      
+      showModal(modalDialog(
+        title = "Skill Point History",
+        history_html,
+        easyClose = TRUE,
+        footer = modalButton("Close")
+      ))
+    })
+    
+    # Function to add skill points with an event entry
+    addSkillPointEvent <- function(points, event_description) {
+      if (userProfile$initialized && !is.null(userProfile$player_id) && points > 0) {
+        # Update available points
+        skillData$availablePoints <- skillData$availablePoints + points
+        
+        # Create event entry
+        event_entry <- list(
+          date = format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
+          description = event_description,
+          points = points
+        )
+        
+        # Add to history
+        skillData$pointHistory <- c(list(event_entry), skillData$pointHistory)
+        
+        # Show notification
+        showNotification(
+          paste0("You earned ", points, " skill point", ifelse(points > 1, "s", ""), "!"),
+          type = "message"
+        )
+        
+        # Return TRUE for successful award
+        return(TRUE)
+      }
+      
+      # Return FALSE if points couldn't be awarded
+      return(FALSE)
+    }
+    
+    # Testing function - simulates performance achievement event
+    observeEvent(input$testPerformanceEvent, {
+      addSkillPointEvent(1, "Achieved quarterly profit target")
+    })
+    
+    # Testing function - simulates innovation event
+    observeEvent(input$testInnovationEvent, {
+      addSkillPointEvent(2, "Successfully implemented new digital platform")
+    })
+    
+    # Testing function - simulates educational event
+    observeEvent(input$testEducationalEvent, {
+      addSkillPointEvent(1, "Completed executive training program")
+    })
+    
+    # Return skill data and award function for other modules
     return(reactive({
-      skillData$skills
+      list(
+        skills = skillData$skills,
+        awardPoints = function(points, description) {
+          addSkillPointEvent(points, description)
+        }
+      )
     }))
   })
 } 

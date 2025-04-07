@@ -414,6 +414,9 @@ save_player_skills <- function(player_id, skills) {
   # Define the file path
   file_path <- paste0("data/skills/", player_id, "_skills.rds")
   
+  # Add timestamp to skills
+  skills$last_updated <- format(Sys.time(), "%Y-%m-%d %H:%M:%S")
+  
   # Save skills as RDS file
   saveRDS(skills, file = file_path)
   
@@ -441,18 +444,34 @@ load_player_skills <- function(player_id) {
       investmentStrategy = 0,
       productInnovation = 0,
       dataAnalytics = 0,
-      digitalTransformation = 0
+      digitalTransformation = 0,
+      pointHistory = list(),  # Empty history of point events
+      last_updated = format(Sys.time(), "%Y-%m-%d %H:%M:%S")
     ))
   }
 }
 
 # Award skill points to a player
-award_skill_points <- function(player_id, points_to_award) {
+award_skill_points <- function(player_id, points_to_award, description) {
   # Load current skills
   skills <- load_player_skills(player_id)
   
   # Add points
   skills$availablePoints <- skills$availablePoints + points_to_award
+  
+  # Create event entry
+  event_entry <- list(
+    date = format(Sys.time(), "%Y-%m-%d %H:%M:%S"),
+    description = description,
+    points = points_to_award
+  )
+  
+  # Add to point history (at the beginning for reverse chronological order)
+  if (is.null(skills$pointHistory)) {
+    skills$pointHistory <- list(event_entry)
+  } else {
+    skills$pointHistory <- c(list(event_entry), skills$pointHistory)
+  }
   
   # Save updated skills
   save_player_skills(player_id, skills)

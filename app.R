@@ -172,6 +172,25 @@ server <- function(input, output, session) {
     output$mainContent <- renderUI({
       techTreeUI("techTree")
     })
+    
+    # Add test buttons to showcase skill point events
+    if (input$isAdmin) {
+      insertUI(
+        selector = "#mainContent",
+        where = "beforeEnd",
+        ui = div(
+          style = "margin-top: 20px; padding: 15px; background-color: #333; border: 1px solid #555;",
+          h3("Admin: Skill Point Event Testing"),
+          p("Use these buttons to simulate skill point award events:"),
+          div(
+            style = "display: flex; gap: 10px;",
+            actionButton("testPerformanceEvent", "Simulate Performance Achievement", class = "btn-info"),
+            actionButton("testInnovationEvent", "Simulate Innovation Event", class = "btn-success"),
+            actionButton("testEducationalEvent", "Simulate Educational Event", class = "btn-warning")
+          )
+        )
+      )
+    }
   })
   
   # Default view on startup
@@ -658,6 +677,88 @@ server <- function(input, output, session) {
   observe({
     if (userProfile$initialized && !is.null(userProfile$player_id) && is.null(userProfile$skills)) {
       userProfile$skills <- load_player_skills(userProfile$player_id)
+    }
+  })
+  
+  # Test event handlers
+  observeEvent(input$testPerformanceEvent, {
+    if (userProfile$initialized && !is.null(userProfile$player_id)) {
+      # Award a skill point for performance achievement
+      techTreeData <- techTreeServer("techTree", userProfile, gameData)
+      tech_tree_result <- techTreeData()
+      result <- tech_tree_result$awardPoints(1, "Achieved quarterly profit target")
+      
+      if (result) {
+        showNotification("Performance achievement recognized! You earned 1 skill point.", type = "message")
+        
+        # Add inbox message about the achievement
+        insertUI(
+          selector = ".inbox-message:first-child",
+          where = "beforeBegin",
+          ui = div(class = "inbox-message",
+            h4("Quarterly Performance Achievement"),
+            p(class = "inbox-message-sender", "From: CFO Office"),
+            p("Congratulations! Your company has exceeded its quarterly profit targets. As a result, you've earned a skill point to invest in your executive capabilities."),
+            p(class = "inbox-message-time", paste0("Received: ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")))
+          )
+        )
+      }
+    } else {
+      showNotification("Please set up your profile first.", type = "warning")
+    }
+  })
+  
+  observeEvent(input$testInnovationEvent, {
+    if (userProfile$initialized && !is.null(userProfile$player_id)) {
+      # Award two skill points for innovation
+      techTreeData <- techTreeServer("techTree", userProfile, gameData)
+      tech_tree_result <- techTreeData()
+      result <- tech_tree_result$awardPoints(2, "Successfully implemented digital platform initiative")
+      
+      if (result) {
+        showNotification("Innovation achievement recognized! You earned 2 skill points.", type = "message")
+        
+        # Add inbox message about the achievement
+        insertUI(
+          selector = ".inbox-message:first-child",
+          where = "beforeBegin",
+          ui = div(class = "inbox-message",
+            h4("Digital Transformation Success"),
+            p(class = "inbox-message-sender", "From: Chief Innovation Officer"),
+            p("Your leadership in implementing our new digital platform has been outstanding. The project was completed ahead of schedule and under budget. As recognition, you've been awarded 2 skill points."),
+            p(class = "inbox-message-time", paste0("Received: ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")))
+          )
+        )
+      }
+    } else {
+      showNotification("Please set up your profile first.", type = "warning")
+    }
+  })
+  
+  observeEvent(input$testEducationalEvent, {
+    if (userProfile$initialized && !is.null(userProfile$player_id)) {
+      # Award a skill point for educational achievement
+      techTreeData <- techTreeServer("techTree", userProfile, gameData)
+      tech_tree_result <- techTreeData()
+      result <- tech_tree_result$awardPoints(1, "Completed executive training program")
+      
+      if (result) {
+        showNotification("Educational achievement recognized! You earned 1 skill point.", type = "message")
+        
+        # Add inbox message about the achievement
+        insertUI(
+          selector = ".inbox-message:first-child",
+          where = "beforeBegin",
+          ui = div(class = "inbox-message",
+            h4("Executive Education Completed"),
+            p(class = "inbox-message-sender", "From: HR Department"),
+            p("Congratulations on completing the Advanced Risk Management training program. Your dedication to professional development has earned you 1 skill point to enhance your capabilities."),
+            p(class = "inbox-message-time", paste0("Received: ", format(Sys.time(), "%Y-%m-%d %H:%M:%S")))
+          )
+        )
+      }
+    } else {
+      showNotification("Please set up your profile first.", type = "warning")
     }
   })
 }
