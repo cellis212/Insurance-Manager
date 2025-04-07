@@ -1,0 +1,239 @@
+<cursor-tools Integration>
+# Instructions
+Use the following commands to get AI assistance:
+
+**Web Search:**
+`cursor-tools web "<your question>"` - Get answers from the web using Perplexity AI (e.g., `cursor-tools web "latest weather in London"`)
+when using web for complex queries suggest writing the output to a file somewhere like local-research/<query summary>.md.
+
+**Repository Context:**
+`cursor-tools repo "<your question>"` - Get context-aware answers about this repository using Google Gemini (e.g., `cursor-tools repo "explain authentication flow"`)
+
+**Documentation Generation:**
+`cursor-tools doc [options]` - Generate comprehensive documentation for this repository (e.g., `cursor-tools doc --output docs.md`)
+when using doc for remote repos suggest writing the output to a file somewhere like local-docs/<repo-name>.md.
+
+**GitHub Information:**
+`cursor-tools github pr [number]` - Get the last 10 PRs, or a specific PR by number (e.g., `cursor-tools github pr 123`)
+`cursor-tools github issue [number]` - Get the last 10 issues, or a specific issue by number (e.g., `cursor-tools github issue 456`)
+
+**Browser Automation (Stateless):**
+`cursor-tools browser open <url> [options]` - Open a URL and capture page content, console logs, and network activity (e.g., `cursor-tools browser open "https://example.com" --html`)
+`cursor-tools browser act "<instruction>" --url=<url> [options]` - Execute actions on a webpage using natural language instructions (e.g., `cursor-tools browser act "Click Login" --url=https://example.com`)
+`cursor-tools browser observe "<instruction>" --url=<url> [options]` - Observe interactive elements on a webpage and suggest possible actions (e.g., `cursor-tools browser observe "interactive elements" --url=https://example.com`)
+`cursor-tools browser extract "<instruction>" --url=<url> [options]` - Extract data from a webpage based on natural language instructions (e.g., `cursor-tools browser extract "product names" --url=https://example.com/products`)
+
+**Notes on Browser Commands:**
+- All browser commands are stateless: each command starts with a fresh browser instance and closes it when done.
+- When using `--connect-to`, special URL values are supported:
+  - `current`: Use the existing page without reloading
+  - `reload-current`: Use the existing page and refresh it (useful in development)
+- Multi step workflows involving state or combining multiple actions are supported in the `act` command using the pipe (|) separator (e.g., `cursor-tools browser act "Click Login | Type 'user@example.com' into email | Click Submit" --url=https://example.com`)
+- Video recording is available for all browser commands using the `--video=<directory>` option. This will save a video of the entire browser interaction at 1280x720 resolution. The video file will be saved in the specified directory with a timestamp.
+- DO NOT ask browser act to "wait" for anything, the wait command is currently disabled in Stagehand.
+
+**Tool Recommendations:**
+- `cursor-tools web` is best for general web information not specific to the repository.
+- `cursor-tools repo` is ideal for repository-specific questions, planning, code review and debugging.
+- `cursor-tools doc` generates documentation for local or remote repositories.
+- `cursor-tools browser` is useful for testing and debugging web apps.
+
+**Running Commands:**
+1. **Installed version:** Use `cursor-tools <command>` (if in PATH) or `npm exec cursor-tools "<command>"`, `yarn cursor-tools "<command>"`, `pnpm cursor-tools "<command>"`.
+2. **Without installation:** Use `npx -y cursor-tools@latest "<command>"` or `bunx -y cursor-tools@latest "<command>"`.
+
+**General Command Options (Supported by all commands):**
+--model=<model name>: Specify an alternative AI model to use
+--max-tokens=<number>: Control response length
+--save-to=<file path>: Save command output to a file (in *addition* to displaying it)
+--help: View all available options (help is not fully implemented yet)
+
+**Documentation Command Options:**
+--from-github=<GitHub username>/<repository name>[@<branch>]: Generate documentation for a remote GitHub repository
+
+**GitHub Command Options:**
+--from-github=<GitHub username>/<repository name>[@<branch>]: Access PRs/issues from a specific GitHub repository
+
+**Browser Command Options (for 'open', 'act', 'observe', 'extract'):**
+--console: Capture browser console logs (enabled by default, use --no-console to disable)
+--html: Capture page HTML content
+--network: Capture network activity (enabled by default, use --no-network to disable)
+--screenshot=<file path>: Save a screenshot of the page
+--timeout=<milliseconds>: Set navigation timeout (default: 30000ms)
+--viewport=<width>x<height>: Set viewport size (e.g., 1280x720). When using --connect-to, viewport is only changed if this option is explicitly provided
+--headless: Run browser in headless mode (default: true)
+--no-headless: Show browser UI (non-headless mode) for debugging
+--connect-to=<port>: Connect to existing Chrome instance
+--wait=<duration or selector>: Wait after page load (e.g., '5s', '#element-id', 'selector:.my-class')
+--video=<directory>: Save a video recording of the browser interaction to the specified directory (1280x720 resolution). Not available when using --connect-to
+
+**Additional Notes:**
+- For detailed information, see `node_modules/cursor-tools/README.md` (if installed locally).
+- Configuration is in `cursor-tools.config.json` (or `~/.cursor-tools/config.json`).
+- API keys are loaded from `.cursor-tools.env` (or `~/.cursor-tools/.env`).
+- Browser commands require separate installation of Playwright: `npm install --save-dev playwright` or `npm install -g playwright`.
+- **Remember:** You're part of a team of superhuman expert AIs. Work together to solve complex problems.
+<!-- cursor-tools-version: 0.5.0 -->
+</cursor-tools Integration>
+
+# R and Shiny Testing Guidelines
+
+## Running R Scripts in PowerShell
+**Run R code in the powershell with the correct path to Rscript.exe:**
+```powershell
+& 'C:\Program Files\R\R-4.4.1\bin\Rscript.exe' -e "shiny::runApp(launch.browser = TRUE)"
+```
+
+## Automated Testing with Python and Selenium
+
+For testing Shiny applications, use Python with Selenium:
+
+1. **Starting Shiny App in Tests:**
+```python
+import subprocess
+import socket
+import time
+
+def is_port_in_use(port):
+    """Check if a port is already in use."""
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        return s.connect_ex(('localhost', port)) == 0
+
+def find_available_port(start=8000, end=9000):
+    """Find an available port in the given range."""
+    for port in range(start, end):
+        if not is_port_in_use(port):
+            return port
+    raise RuntimeError("No available ports found")
+
+def start_shiny_app():
+    port = find_available_port()
+    r_script_path = r'C:\Program Files\R\R-4.4.1\bin\Rscript.exe'
+    cmd = [r_script_path, "-e", f"shiny::runApp(port={port}, launch.browser=FALSE)"]
+    
+    process = subprocess.Popen(
+        cmd,
+        stdout=subprocess.PIPE, 
+        stderr=subprocess.PIPE,
+        creationflags=subprocess.CREATE_NO_WINDOW
+    )
+    
+    # Wait for app to start by checking port
+    retries = 0
+    while retries < 30:
+        time.sleep(1)
+        if is_port_in_use(port):
+            time.sleep(3)  # Additional time for app to fully initialize
+            break
+        retries += 1
+    
+    return process, port
+
+def stop_shiny_app():
+    subprocess.run(
+        ["taskkill", "/F", "/IM", "Rscript.exe", "/T"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE
+    )
+```
+
+2. **Setting Up WebDriver:**
+```python
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+
+def setup_driver():
+    """Set up and return a Chrome WebDriver."""
+    chrome_options = Options()
+    chrome_options.add_argument("--headless=new")  # For headless testing
+    chrome_options.add_argument("--window-size=1920,1080")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    
+    service = Service()
+    driver = webdriver.Chrome(service=service, options=chrome_options)
+    return driver
+```
+
+3. **Waiting for Elements:**
+```python
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+def wait_for_element(driver, selector, by=By.CSS_SELECTOR, timeout=20):
+    """Wait for an element to be present and visible."""
+    try:
+        element = WebDriverWait(driver, timeout).until(
+            EC.visibility_of_element_located((by, selector))
+        )
+        return element
+    except TimeoutException:
+        return None
+```
+
+4. **Debugging Tips:**
+   - Create a directory for screenshots: `os.makedirs("verification", exist_ok=True)`
+   - Take screenshots at key points: `driver.save_screenshot("verification/step_name.png")`
+   - Save page source: `with open("verification/page.html", 'w', encoding='utf-8') as f: f.write(driver.page_source)`
+   - Log all buttons/elements found to understand what's available
+   - If elements aren't found by ID, try finding them by text content
+
+5. **Test Structure:**
+```python
+def test_functionality():
+    driver = None
+    process = None
+    try:
+        # First ensure no previous R processes are running
+        stop_shiny_app()
+        
+        # Start the app
+        process, port = start_shiny_app()
+        if not process or not port:
+            return False
+            
+        # Setup driver and navigate to app
+        driver = setup_driver()
+        app_url = f"http://127.0.0.1:{port}"
+        driver.get(app_url)
+        
+        # Take screenshots for debugging
+        driver.save_screenshot("verification/app_loaded.png")
+        
+        # Test functionality
+        # ...
+        
+        return True
+    except Exception as e:
+        if driver:
+            driver.save_screenshot("verification/error.png")
+        return False
+    finally:
+        if driver:
+            driver.quit()
+        if process and process.poll() is None:
+            process.terminate()
+        stop_shiny_app()
+```
+
+## Best Practices for Testing
+
+1. **Port Management:**
+   - Always use dynamic port finding to avoid conflicts
+   - Wait for port to be actually listening before connecting
+
+2. **Error Handling:**
+   - Capture all exceptions and save debug info for troubleshooting
+   - Use try/finally blocks to ensure proper cleanup even after errors
+
+3. **Element Selection:**
+   - Be flexible in how you find elements (ID, class, text, etc.)
+   - Log available elements when elements aren't found
+   - Use longer timeouts (20+ seconds) for Shiny apps which can be slow to render
+
+4. **Documentation:**
+   - Save screenshots at each test stage
+   - Include screenshots in PR descriptions
+   - Create directory structures for organized test artifacts
