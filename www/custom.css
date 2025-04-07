@@ -440,4 +440,124 @@ h2, h3, h4 {
 /* Ensure select inputs have proper spacing */
 .selectize-control {
   margin-bottom: 15px;
+}
+
+/* Tech Tree Styles */
+.skill-points-card {
+  background-color: #2c3e50;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.skill-points-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.skill-points-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: #3498db;
+}
+
+.skill-card {
+  background-color: #2c3e50;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 20px;
+  height: 100%;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.skill-card.level-1 {
+  border-left: 3px solid #3498db;
+}
+
+.skill-card.level-2 {
+  border-left: 3px solid #2ecc71;
+}
+
+.skill-card.level-3 {
+  border-left: 3px solid #f39c12;
+}
+
+.skill-card.level-4 {
+  border-left: 3px solid #e74c3c;
+}
+
+.skill-card.level-5 {
+  border-left: 3px solid #9b59b6;
+  background-color: #34495e;
+}
+
+.skill-header {
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.skill-header h4 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.skill-level {
+  font-size: 14px;
+  color: #95a5a6;
+}
+
+.skill-level-value {
+  font-weight: bold;
+  color: #ecf0f1;
+}
+
+.skill-effects {
+  margin: 10px 0;
+  padding: 10px;
+  background-color: rgba(0,0,0,0.2);
+  border-radius: 3px;
+}
+
+.skill-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.skill-tree-visualizer {
+  background-color: #2c3e50;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .skill-card {
+    margin-bottom: 15px;
+  }
+  
+  .skill-header {
+    flex-direction: column;
+  }
+  
+  .skill-level {
+    margin-top: 5px;
+  }
+  
+  .skill-actions {
+    flex-direction: column;
+  }
+  
+  .skill-actions button {
+    margin-bottom: 5px;
+  }
 } 

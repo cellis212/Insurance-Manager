@@ -17,6 +17,7 @@ source("backend/admin_ui.R")
 source("modules/profile_module.R")
 source("modules/advanced_analytics_module.R")
 source("modules/auction_module.R")
+source("modules/tech_tree_module.R")
 
 # UI Definition
 ui <- fluidPage(
@@ -25,6 +26,9 @@ ui <- fluidPage(
   
   # Include custom CSS
   includeCSS("www/custom.css"),
+  
+  # Include custom JavaScript
+  tags$script(src = "simulation.js"),
   
   # Application title
   titlePanel("Insurance Simulation Game"),
@@ -51,6 +55,10 @@ ui <- fluidPage(
       
       actionButton("analyticsBtn", "Analytics Dashboard", 
                   icon = icon("chart-bar"), 
+                  class = "btn-block"),
+      
+      actionButton("techTreeBtn", "Tech Tree & Skills", 
+                  icon = icon("project-diagram"), 
                   class = "btn-block"),
       
       conditionalPanel(
@@ -160,6 +168,12 @@ server <- function(input, output, session) {
     })
   })
   
+  observeEvent(input$techTreeBtn, {
+    output$mainContent <- renderUI({
+      techTreeUI("techTree")
+    })
+  })
+  
   # Default view on startup
   output$mainContent <- renderUI({
     if (!userProfile$initialized) {
@@ -174,6 +188,9 @@ server <- function(input, output, session) {
   
   # Initialize auction module
   auctionData <- auctionServer("auction", userProfile, gameData)
+  
+  # Initialize tech tree module
+  techTreeData <- techTreeServer("techTree", userProfile, gameData)
   
   # Export profile initialization status to UI
   output$profileInitialized <- reactive({
@@ -635,6 +652,13 @@ server <- function(input, output, session) {
     adminData <- adminResults()
     gameData$currentTurn <- adminData$currentTurn
     gameData$gameState <- adminData$gameState
+  })
+  
+  # Update the userProfile reactiveValues to include skills
+  observe({
+    if (userProfile$initialized && !is.null(userProfile$player_id) && is.null(userProfile$skills)) {
+      userProfile$skills <- load_player_skills(userProfile$player_id)
+    }
   })
 }
 
