@@ -219,41 +219,118 @@ server <- function(input, output, session) {
   
   # Inbox UI - CEO's Office
   inboxUI <- function() {
+    # Process any pending events for the current player
+    if (!is.null(userProfile$player_id)) {
+      # Load latest game state
+      current_game_state <- load_game_state(gameData$currentTurn)
+      if (!is.null(current_game_state)) {
+        # Process events for this player
+        process_events(current_game_state, userProfile$player_id)
+      }
+    }
+    
+    # Load inbox messages for the current player
+    inbox_messages <- load_inbox_messages(userProfile$player_id)
+    
     tagList(
       h2("CEO's Office - Inbox"),
       p("Messages from C-suite executives and external stakeholders will appear here."),
       
-      # Placeholder for inbox messages
-      div(class = "inbox-message",
-        h4("Welcome to your new role as CEO"),
-        p(class = "inbox-message-sender", "From: Board of Directors"),
-        p("We're excited to have you lead our insurance company. Your decisions will shape our future success."),
-        p(class = "inbox-message-time", "Received: Today at 9:00 AM")
-      ),
-      
-      div(class = "inbox-message",
-        h4("Quarterly Financial Results"),
-        p(class = "inbox-message-sender", "From: CFO Office"),
-        p("I've prepared the quarterly financial results for your review. Our combined ratio is at 95%, which is within our target range."),
-        p(class = "inbox-message-time", "Received: Yesterday at 2:30 PM")
-      ),
-      
-      div(class = "inbox-message",
-        h4("Risk Management Concerns"),
-        p(class = "inbox-message-sender", "From: CRO Office"),
-        p("We need to discuss our exposure in Florida. Recent hurricane models suggest we may be underpicing our home insurance products in coastal areas."),
-        p(class = "inbox-message-time", "Received: 2 days ago at 11:15 AM")
-      ),
-      
-      # New auction-related inbox message
-      div(class = "inbox-message",
-        h4("Asset and Risk Management Auctions Available"),
-        p(class = "inbox-message-sender", "From: CFO and CRO Offices"),
-        p("We have identified several investment opportunities and risk management tools that could strengthen our portfolio and reduce our risk exposure. Visit the CFO's Office to participate in auctions."),
-        p(class = "inbox-message-time", "Received: Today at 10:45 AM"),
-        actionButton("goToAuctionsBtn", "Visit CFO's Office", class = "btn-sm btn-info")
-      )
+      # Display inbox messages
+      if (length(inbox_messages) > 0) {
+        lapply(inbox_messages, function(msg) {
+          div(class = paste0("inbox-message", ifelse(msg$category == "skill_points", " skill-points-message", "")),
+            h4(msg$title),
+            p(class = "inbox-message-sender", paste0("From: ", msg$sender)),
+            p(msg$content),
+            p(class = "inbox-message-time", paste0("Received: ", msg$timestamp)),
+            if (msg$category == "skill_points") {
+              actionButton(paste0("goToTechTreeBtn_", msg$id), "View Tech Tree", class = "btn-sm btn-success")
+            } else if (msg$title == "Asset and Risk Management Auctions Available") {
+              actionButton("goToAuctionsBtn", "Visit CFO's Office", class = "btn-sm btn-info")
+            }
+          )
+        })
+      } else {
+        # Default messages if none found in database
+        tagList(
+          div(class = "inbox-message",
+            h4("Welcome to your new role as CEO"),
+            p(class = "inbox-message-sender", "From: Board of Directors"),
+            p("We're excited to have you lead our insurance company. Your decisions will shape our future success."),
+            p(class = "inbox-message-time", "Received: Today at 9:00 AM")
+          ),
+          
+          div(class = "inbox-message",
+            h4("Quarterly Financial Results"),
+            p(class = "inbox-message-sender", "From: CFO Office"),
+            p("I've prepared the quarterly financial results for your review. Our combined ratio is at 95%, which is within our target range."),
+            p(class = "inbox-message-time", "Received: Yesterday at 2:30 PM")
+          ),
+          
+          div(class = "inbox-message",
+            h4("Risk Management Concerns"),
+            p(class = "inbox-message-sender", "From: CRO Office"),
+            p("We need to discuss our exposure in Florida. Recent hurricane models suggest we may be underpicing our home insurance products in coastal areas."),
+            p(class = "inbox-message-time", "Received: 2 days ago at 11:15 AM")
+          ),
+          
+          # New auction-related inbox message
+          div(class = "inbox-message",
+            h4("Asset and Risk Management Auctions Available"),
+            p(class = "inbox-message-sender", "From: CFO and CRO Offices"),
+            p("We have identified several investment opportunities and risk management tools that could strengthen our portfolio and reduce our risk exposure. Visit the CFO's Office to participate in auctions."),
+            p(class = "inbox-message-time", "Received: Today at 10:45 AM"),
+            actionButton("goToAuctionsBtn", "Visit CFO's Office", class = "btn-sm btn-info")
+          )
+        )
+      }
     )
+  }
+  
+  # Helper function to load inbox messages for a player
+  load_inbox_messages <- function(player_id) {
+    if (is.null(player_id)) {
+      return(list())
+    }
+    
+    # Check if inbox directory exists
+    message_dir <- "data/inbox"
+    if (!dir.exists(message_dir)) {
+      return(list())
+    }
+    
+    # List all message files
+    message_files <- list.files(
+      path = message_dir,
+      pattern = "\\.json$",
+      full.names = TRUE
+    )
+    
+    # Load and filter messages for this player
+    messages <- list()
+    for (file in message_files) {
+      message_data <- tryCatch({
+        jsonlite::read_json(file, simplifyVector = TRUE)
+      }, error = function(e) {
+        NULL
+      })
+      
+      if (!is.null(message_data) && (is.null(message_data$player_id) || message_data$player_id == player_id)) {
+        messages[[length(messages) + 1]] <- message_data
+      }
+    }
+    
+    # Sort messages by timestamp (newest first)
+    if (length(messages) > 0) {
+      message_timestamps <- sapply(messages, function(msg) {
+        if (is.null(msg$timestamp)) return("")
+        return(msg$timestamp)
+      })
+      messages <- messages[order(message_timestamps, decreasing = TRUE)]
+    }
+    
+    return(messages)
   }
   
   # Observer for the "Go to Auctions" button in the inbox
@@ -261,6 +338,29 @@ server <- function(input, output, session) {
     output$mainContent <- renderUI({
       auctionUI("auction")
     })
+  })
+  
+  # Dynamic observers for Tech Tree buttons in skill point messages
+  observe({
+    inbox_messages <- load_inbox_messages(userProfile$player_id)
+    
+    if (length(inbox_messages) > 0) {
+      for (msg in inbox_messages) {
+        if (!is.null(msg$category) && msg$category == "skill_points" && !is.null(msg$id)) {
+          local({
+            msg_id <- msg$id
+            button_id <- paste0("goToTechTreeBtn_", msg_id)
+            
+            # Create observer for this specific button
+            observeEvent(input[[button_id]], {
+              output$mainContent <- renderUI({
+                techTreeUI("techTree")
+              })
+            }, ignoreInit = TRUE)
+          })
+        }
+      }
+    }
   })
   
   # Chief Actuary's Office UI

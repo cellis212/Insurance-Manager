@@ -1,2 +1,0 @@
-[2025-03-31 16:24:07] Java not found in PATH 
-[2025-03-31 16:24:07] Java is required for RSelenium to work 

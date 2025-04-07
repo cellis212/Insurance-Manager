@@ -358,17 +358,80 @@ techTreeServer <- function(id, userProfile, gameData) {
     
     # Testing function - simulates performance achievement event
     observeEvent(input$testPerformanceEvent, {
-      addSkillPointEvent(1, "Achieved quarterly profit target")
+      if (!is.null(userProfile$player_id)) {
+        # Create a test performance event
+        event <- list(
+          type = "skill_point",
+          category = "performance",
+          title = "Quarterly Performance Achievement",
+          description = "Achieved quarterly profit target",
+          points = 1,
+          timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S")
+        )
+        
+        # Process event through the new event system
+        process_skill_point_event(event, userProfile$player_id)
+        
+        # Show notification to user
+        showNotification(
+          paste0("Simulated a performance achievement event! Check your inbox."),
+          type = "message"
+        )
+      } else {
+        showNotification("Please create a profile first", type = "warning")
+      }
     })
     
     # Testing function - simulates innovation event
     observeEvent(input$testInnovationEvent, {
-      addSkillPointEvent(2, "Successfully implemented new digital platform")
+      if (!is.null(userProfile$player_id)) {
+        # Create a test innovation event
+        event <- list(
+          type = "skill_point",
+          category = "innovation",
+          title = "Innovation Milestone",
+          description = "Successfully implemented new digital platform",
+          points = 2,
+          timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S")
+        )
+        
+        # Process event through the new event system
+        process_skill_point_event(event, userProfile$player_id)
+        
+        # Show notification to user
+        showNotification(
+          paste0("Simulated an innovation milestone event! Check your inbox."),
+          type = "message"
+        )
+      } else {
+        showNotification("Please create a profile first", type = "warning")
+      }
     })
     
     # Testing function - simulates educational event
     observeEvent(input$testEducationalEvent, {
-      addSkillPointEvent(1, "Completed executive training program")
+      if (!is.null(userProfile$player_id)) {
+        # Create a test educational event
+        event <- list(
+          type = "skill_point",
+          category = "educational",
+          title = "Educational Achievement",
+          description = "Completed executive training program",
+          points = 1,
+          timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S")
+        )
+        
+        # Process event through the new event system
+        process_skill_point_event(event, userProfile$player_id)
+        
+        # Show notification to user
+        showNotification(
+          paste0("Simulated an educational achievement event! Check your inbox."),
+          type = "message"
+        )
+      } else {
+        showNotification("Please create a profile first", type = "warning")
+      }
     })
     
     # Return skill data and award function for other modules

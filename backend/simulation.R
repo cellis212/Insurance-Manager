@@ -483,6 +483,14 @@ run_simulation_step <- function(game_state, player_decisions) {
       risk_results = risk_results,
       financial_results = financial_results
     )
+    
+    # Generate achievement-based skill point events
+    achievement_events <- generate_achievement_events(financial_results, premium_results, investment_results, risk_results)
+    
+    # Process achievement events immediately
+    for (event in achievement_events) {
+      process_skill_point_event(event, player_id)
+    }
   }
   
   # Store results in game state
@@ -491,10 +499,79 @@ run_simulation_step <- function(game_state, player_decisions) {
   # Update market conditions for next turn
   game_state$market_conditions$market_condition <- update_market_conditions(market_condition, results)
   
-  # Generate random events for next turn
+  # Generate random events for next turn (includes skill point events)
   game_state$events <- generate_events(game_state)
   
   return(game_state)
+}
+
+#' Generate achievement-based skill point events based on player performance
+#'
+#' @param financial_results Financial results for the player
+#' @param premium_results Premium adjustment results
+#' @param investment_results Investment results
+#' @param risk_results Risk management results
+#' @return List of achievement events
+generate_achievement_events <- function(financial_results, premium_results, investment_results, risk_results) {
+  events <- list()
+  
+  # Check for financial achievements
+  if (!is.null(financial_results$combined_ratio) && financial_results$combined_ratio < 95) {
+    # Excellent combined ratio achievement
+    event <- list(
+      type = "skill_point",
+      category = "performance",
+      title = "Financial Performance Achievement",
+      description = paste0("Achieved excellent combined ratio of ", round(financial_results$combined_ratio, 1), "%"),
+      points = 1,
+      timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S")
+    )
+    events[[length(events) + 1]] <- event
+  }
+  
+  # Check for profit achievements
+  if (!is.null(financial_results$profit) && financial_results$profit > 100000) {
+    # High profit achievement
+    event <- list(
+      type = "skill_point",
+      category = "performance",
+      title = "Profit Achievement",
+      description = paste0("Achieved outstanding annual profit of $", format(round(financial_results$profit / 1000, 0), nsmall = 0), "k"),
+      points = 1,
+      timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S")
+    )
+    events[[length(events) + 1]] <- event
+  }
+  
+  # Check for investment achievements
+  if (!is.null(investment_results$return_rate) && investment_results$return_rate > 0.1) {
+    # High investment return achievement
+    event <- list(
+      type = "skill_point",
+      category = "innovation",
+      title = "Investment Excellence",
+      description = paste0("Achieved exceptional investment returns of ", round(investment_results$return_rate * 100, 1), "%"),
+      points = 1,
+      timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S")
+    )
+    events[[length(events) + 1]] <- event
+  }
+  
+  # Check for risk management achievements
+  if (!is.null(risk_results$effectiveness) && risk_results$effectiveness > 0.8) {
+    # Excellent risk management achievement
+    event <- list(
+      type = "skill_point",
+      category = "risk_management",
+      title = "Risk Management Excellence",
+      description = "Implemented highly effective risk mitigation strategies",
+      points = 1,
+      timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S")
+    )
+    events[[length(events) + 1]] <- event
+  }
+  
+  return(events)
 }
 
 #' Process premium decisions for a player
@@ -651,6 +728,10 @@ generate_events <- function(game_state) {
     
     events[[length(events) + 1]] <- event
   }
+  
+  # Generate skill point events (new addition)
+  skill_events <- generate_skill_point_events(game_state)
+  events <- c(events, skill_events)
   
   return(c(game_state$events, events))
 }
@@ -819,4 +900,194 @@ calculate_performance_score <- function(decisions, game_state) {
   }
   
   return(score)
+}
+
+#' Generate skill point award events
+#'
+#' @param game_state The current game state
+#' @return List of skill point events
+generate_skill_point_events <- function(game_state) {
+  events <- list()
+  
+  # Performance achievement events
+  if (runif(1) < 0.4) { # 40% chance of a performance event
+    event <- list(
+      type = "skill_point",
+      category = "performance",
+      title = "Quarterly Performance Achievement",
+      description = sample(c(
+        "Achieved quarterly profit target",
+        "Met underwriting performance goals",
+        "Exceeded revenue forecasts for the quarter",
+        "Achieved target loss ratio for major product line",
+        "Reduced operational expenses below target"
+      ), 1),
+      points = 1,
+      timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S")
+    )
+    events[[length(events) + 1]] <- event
+  }
+  
+  # Innovation events (less frequent but more points)
+  if (runif(1) < 0.2) { # 20% chance of an innovation event
+    event <- list(
+      type = "skill_point",
+      category = "innovation",
+      title = "Innovation Milestone",
+      description = sample(c(
+        "Successfully implemented new digital platform",
+        "Launched innovative insurance product",
+        "Modernized claims processing system",
+        "Introduced AI-based risk assessment",
+        "Deployed new customer service technology"
+      ), 1),
+      points = 2,
+      timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S")
+    )
+    events[[length(events) + 1]] <- event
+  }
+  
+  # Educational events
+  if (runif(1) < 0.3) { # 30% chance of an educational event
+    event <- list(
+      type = "skill_point",
+      category = "educational",
+      title = "Educational Achievement",
+      description = sample(c(
+        "Completed executive training program",
+        "Team completed risk management certification",
+        "Invested in employee development programs",
+        "Participated in industry leadership workshop",
+        "Conducted company-wide actuarial training"
+      ), 1),
+      points = 1,
+      timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S")
+    )
+    events[[length(events) + 1]] <- event
+  }
+  
+  # Risk management success events
+  if (runif(1) < 0.25) { # 25% chance of a risk management event
+    event <- list(
+      type = "skill_point",
+      category = "risk_management",
+      title = "Risk Management Success",
+      description = sample(c(
+        "Successfully mitigated major risk exposure",
+        "Implemented effective reinsurance strategy",
+        "Prevented significant catastrophe losses",
+        "Optimized capital allocation for risk management",
+        "Improved risk modeling accuracy"
+      ), 1),
+      points = 1,
+      timestamp = format(Sys.time(), "%Y-%m-%d %H:%M:%S")
+    )
+    events[[length(events) + 1]] <- event
+  }
+  
+  return(events)
+}
+
+#' Process all events and apply their effects
+#'
+#' @param game_state The current game state
+#' @param player_id The player's ID to apply effects to
+#' @return Updated game state with event effects applied
+process_events <- function(game_state, player_id) {
+  if (is.null(game_state$events) || length(game_state$events) == 0) {
+    return(game_state)
+  }
+  
+  for (event in game_state$events) {
+    if (event$type == "skill_point") {
+      # Process skill point events
+      process_skill_point_event(event, player_id)
+    }
+    
+    # Process other event types (existing logic)
+    # ...
+  }
+  
+  return(game_state)
+}
+
+#' Process a skill point event and award points to player
+#'
+#' @param event The skill point event
+#' @param player_id The player's ID
+#' @return TRUE if successfully processed, FALSE otherwise
+process_skill_point_event <- function(event, player_id) {
+  if (is.null(player_id)) {
+    return(FALSE)
+  }
+  
+  # Award skill points to the player
+  award_result <- award_skill_points(
+    player_id = player_id,
+    points_to_award = event$points,
+    description = event$description
+  )
+  
+  # Create inbox message for the event
+  if (!is.null(award_result)) {
+    create_skill_point_inbox_message(player_id, event)
+    return(TRUE)
+  }
+  
+  return(FALSE)
+}
+
+#' Create an inbox message for a skill point event
+#'
+#' @param player_id The player's ID
+#' @param event The skill point event
+#' @return TRUE if message created successfully, FALSE otherwise
+create_skill_point_inbox_message <- function(player_id, event) {
+  # Create a filename for the inbox message
+  message_dir <- "data/inbox"
+  if (!dir.exists(message_dir)) {
+    dir.create(message_dir, recursive = TRUE)
+  }
+  
+  # Create message content
+  message <- list(
+    id = paste0("msg_", format(Sys.time(), "%Y%m%d%H%M%S"), "_", sample(1000:9999, 1)),
+    player_id = player_id,
+    title = event$title,
+    sender = get_sender_for_category(event$category),
+    content = paste0(
+      "Congratulations! You've earned ", event$points, " skill point", 
+      ifelse(event$points > 1, "s", ""), " for: ", event$description, 
+      ". Visit the Tech Tree to allocate your new skill points."
+    ),
+    timestamp = event$timestamp,
+    is_read = FALSE,
+    category = "skill_points"
+  )
+  
+  # Save message to file
+  filename <- file.path(message_dir, paste0(message$id, ".json"))
+  result <- tryCatch({
+    write_json(message, filename, pretty = TRUE, auto_unbox = TRUE)
+    TRUE
+  }, error = function(e) {
+    message("Error creating inbox message: ", e$message)
+    FALSE
+  })
+  
+  return(result)
+}
+
+#' Get appropriate sender name based on event category
+#'
+#' @param category The event category
+#' @return Sender name string
+get_sender_for_category <- function(category) {
+  switch(category,
+         "performance" = "CFO Office",
+         "innovation" = "CCO Office",
+         "educational" = "Human Resources",
+         "risk_management" = "CRO Office",
+         "CEO Office" # Default sender
+  )
 } 

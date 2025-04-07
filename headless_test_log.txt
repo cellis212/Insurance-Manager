@@ -1,8 +1,0 @@
-[2025-03-31 16:25:00] === STARTING HEADLESS TEST RUN === 
-[2025-03-31 16:25:00] Setting up PhantomJS directly 
-[2025-03-31 16:25:05] PhantomJS setup complete 
-[2025-03-31 16:25:05] Opening remote browser session 
-[2025-03-31 16:25:07] Error during testing: Undefined error in httr call. httr output: Failed to connect to localhost port 4444 after 2244 ms: Couldn't connect to server 
-[2025-03-31 16:25:07] Closing browser session 
-[2025-03-31 16:25:07] Error closing browser: Undefined error in httr call. httr output: length(url) == 1 is not TRUE 
-[2025-03-31 16:25:07] Test session ended 

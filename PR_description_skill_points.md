@@ -1,34 +1,42 @@
 # Implement Skill Point Award Events
 
-This PR implements issue #12: Implement Skill Point Award Events
-
 ## Description
-This PR adds a complete skill point award event system to the Insurance Simulation Game. Players can now earn skill points through various in-game events such as performance achievements, innovation successes, and educational milestones. The system includes a point history tracker, inbox notifications, and integration with the existing tech tree system.
+This pull request implements a comprehensive system for skill point award events in the Insurance Simulation Game. Players now earn skill points through various achievements and random events, making the progression system more dynamic and engaging. The implementation includes event generation, processing, inbox notifications, and UI enhancements.
 
-## Changes Made
-- Enhanced the Tech Tree module to track and display skill point awards and history
-- Updated data storage to persist point history
-- Added award functions that can be called from any module in the game
-- Integrated with the inbox system to show messages when points are awarded
-- Added admin testing interface for simulating different types of events
-- Created comprehensive testing suite for the feature
+Resolves #12 (Implement Skill Point Award Events)
+
+## Features Added
+- Automatic skill point awards based on player achievements (financial performance, innovation, etc.)
+- Random skill point events that can occur during gameplay
+- Highlighted inbox messages for achievement notifications with appropriate sender attribution
+- Direct navigation from notifications to the Tech Tree for skill allocation
+- Enhanced testing functionality for simulating events in admin mode
 
 ## Screenshots
+![Skill Point Event in Inbox](verification/inbox_with_event_message.png)
+![Point History Modal](verification/point_history_after_event.png)
+![Tech Tree with Points](verification/tech_tree_page.png)
 
-### Skill Point Award History
-![Point History](verification/point_history_after_event.png)
-
-### Notification in Inbox
-![Inbox Notification](verification/inbox_with_event_message.png)
+## Changes Made
+- Added event generation and processing functions to `backend/simulation.R`
+- Enhanced the inbox system in `app.R` to display and handle skill point event messages
+- Updated `tech_tree_module.R` to integrate with the event system
+- Added special styling for skill point messages in `www/custom.css`
+- Updated test scripts to verify all aspects of the skill point event system
 
 ## How to Test
-1. Start the app and create a profile
-2. Enable admin mode by checking the "Enable Admin Mode" checkbox in the sidebar
-3. Navigate to the Tech Tree page
-4. Use the test buttons at the bottom to simulate different event types
-5. Check that skill points are awarded correctly
-6. View the point history to see the record of awarded points
-7. Navigate to the inbox to see notification messages
+1. Run the application with `shiny::runApp()`
+2. Create a profile and enable admin mode
+3. Navigate to the Tech Tree
+4. Use the test buttons to simulate different types of skill point events
+5. Check the inbox for notifications and verify points are awarded
+6. Verify the point history displays correctly in the Tech Tree section
+
+## Additional Notes
+- The system integrates with the existing skill point mechanism in `data_ops.R`
+- Events are generated both randomly and based on player performance
+- The inbox system now processes skill point events when viewed
+- All events are stored persistently and available across game sessions
 
 ## Technical Notes
 - Implementation includes proper persistence of point history
