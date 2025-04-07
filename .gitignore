@@ -9,6 +9,8 @@
 *.pdf
 *.log
 
+.env
+
 # System files
 .DS_Store
 Thumbs.db
@@ -53,4 +55,10 @@ var/
 wheels/
 *.egg-info/
 .installed.cfg
-*.egg 
+*.egg
+
+# GitHub and environment configuration
+.env
+.cursor-tools.env
+# Keep sample environment file
+!sample.env 

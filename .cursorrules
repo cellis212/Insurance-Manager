@@ -17,6 +17,15 @@ when using doc for remote repos suggest writing the output to a file somewhere l
 `cursor-tools github pr [number]` - Get the last 10 PRs, or a specific PR by number (e.g., `cursor-tools github pr 123`)
 `cursor-tools github issue [number]` - Get the last 10 issues, or a specific issue by number (e.g., `cursor-tools github issue 456`)
 
+**GitHub Token Setup:**
+A GitHub token is available in the `.env` file and should be used for all GitHub operations. The token is automatically loaded by cursor-tools when running GitHub commands. For manual GitHub CLI operations, you can access it with:
+```bash
+# Read token from .env file
+token=$(grep GITHUB_TOKEN .env | cut -d '=' -f2)
+# Use with GitHub CLI
+gh auth login --with-token <<< "$token"
+```
+
 **Browser Automation (Stateless):**
 `cursor-tools browser open <url> [options]` - Open a URL and capture page content, console logs, and network activity (e.g., `cursor-tools browser open "https://example.com" --html`)
 `cursor-tools browser act "<instruction>" --url=<url> [options]` - Execute actions on a webpage using natural language instructions (e.g., `cursor-tools browser act "Click Login" --url=https://example.com`)

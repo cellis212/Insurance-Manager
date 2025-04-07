@@ -1,6 +1,74 @@
 # Insurance Simulation Game
 
-A web-based educational simulation game that teaches insurance company management through interactive decision-making and financial analysis.
+An interactive R Shiny web application designed to teach insurance company management through a realistic, turn-based game experience involving financial reporting, risk management, and strategic investments.
+
+## Development Setup
+
+### Prerequisites
+
+- R 4.4.1 or later
+- R packages: shiny, shinythemes, shinydashboard, plotly
+- Python (for testing)
+- Python packages: selenium, webdriver-manager
+
+### Getting Started
+
+1. Clone the repository
+2. Install required R packages:
+   ```R
+   install.packages(c('shiny', 'shinythemes', 'shinydashboard', 'plotly'))
+   ```
+3. Run the application:
+   ```bash
+   & 'C:\Program Files\R\R-4.4.1\bin\Rscript.exe' -e "shiny::runApp(launch.browser = TRUE)"
+   ```
+
+## GitHub Integration
+
+### GitHub Token
+
+A GitHub token is stored in the `.env` file for authentication with GitHub services. This token is used by:
+
+- cursor-tools for GitHub operations
+- GitHub CLI for repository management
+- Any scripts that need to interact with GitHub APIs
+
+To use the token in custom scripts or manual operations:
+
+```bash
+# Read token from .env file
+token=$(grep GITHUB_TOKEN .env | cut -d '=' -f2)
+
+# Use with GitHub CLI
+gh auth login --with-token <<< "$token"
+
+# Use with curl or other HTTP clients
+curl -H "Authorization: token $token" https://api.github.com/user
+```
+
+The token has already been set up with appropriate permissions for this project.
+
+## Testing
+
+The project includes automated testing using Python and Selenium. For details, see the R and Shiny Testing Guidelines in the `.cursorrules` file.
+
+## Project Structure
+
+- `app.R`: Main application file
+- `modules/`: Reusable Shiny modules
+- `www/`: Static assets (CSS, JavaScript, images)
+- `backend/`: Simulation logic and data operations
+- `data/`: Storage for player decisions and game state
+
+## Features
+
+- Executive profile setup
+- Inbox-based navigation
+- Decision-making modules for insurance management
+- Turn-based synchronous multiplayer mode
+- Comprehensive administrator interface
+- Analytics dashboards
+- Tech tree for skill progression
 
 ![Insurance Simulation Game](www/img/logo.png)
 
