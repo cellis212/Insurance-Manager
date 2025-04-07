@@ -334,6 +334,16 @@ if (!exists("validate_game_state")) {
   source("backend/validation.R")
 }
 
+#' Calculate the combined ratio
+#'
+#' @param revenue Total premium revenue
+#' @param claims Total claims paid
+#' @param expenses Total expenses
+#' @return The combined ratio as a percentage
+calculate_combined_ratio <- function(revenue, claims, expenses) {
+  return((claims + expenses) / revenue * 100)
+}
+
 #' Calculate consumer utility for a given insurance product
 #'
 #' @param consumer A list containing consumer characteristics
@@ -444,6 +454,15 @@ run_simulation_step <- function(game_state, player_decisions) {
   for (player_id in names(player_decisions)) {
     # Validate player decisions
     decisions <- validate_player_decisions(player_decisions[[player_id]])
+    
+    # Get player skills
+    player_skills <- load_player_skills(player_id)
+    
+    # Apply skill effects to simulation parameters
+    decisions <- apply_skill_effects(decisions, player_skills)
+    
+    # Check for unlocked features
+    unlocked_features <- check_unlocked_features(player_skills)
     
     # Process premium adjustments
     premium_results <- process_premium_decisions(decisions$premium_adjustments, game_state)
@@ -716,4 +735,88 @@ generate_market_description <- function(market_condition) {
   }
   
   return(sample(descriptions, 1))
+}
+
+#' Process player decisions for a player
+#'
+#' @param player_id The player's ID
+#' @param decisions The player's decisions
+#' @param game_state The current game state
+#' @return Processed decisions with skill effects applied
+process_player_decisions <- function(player_id, decisions, game_state) {
+  # Get player skills
+  player_skills <- load_player_skills(player_id)
+  
+  # Apply skill effects to simulation parameters
+  decisions <- apply_skill_effects(decisions, player_skills)
+  
+  # Check for unlocked features
+  unlocked_features <- check_unlocked_features(player_skills)
+  
+  # Process decisions with skill-enhanced parameters
+  # ... existing code ...
+  
+  # Return the processed decisions with skill effects applied
+  return(decisions)
+}
+
+#' Process yearly update for a player
+#'
+#' @param game_state The current game state
+#' @param player_decisions List of all player decisions for this turn
+#' @return Updated game state after processing yearly update
+process_yearly_update <- function(game_state, player_decisions) {
+  # ... existing code ...
+  
+  # Award skill points based on performance
+  for (player_id in names(player_decisions)) {
+    # Calculate performance score based on financial results
+    performance_score <- calculate_performance_score(player_decisions[[player_id]], game_state)
+    
+    # Award skill points (1-3 based on performance)
+    skill_points <- min(max(floor(performance_score / 25), 1), 3)
+    award_skill_points(player_id, skill_points)
+  }
+  
+  # ... rest of existing code ...
+}
+
+#' Calculate performance score for a player
+#'
+#' @param decisions The player's decisions
+#' @param game_state The current game state
+#' @return Performance score
+calculate_performance_score <- function(decisions, game_state) {
+  # This is a simplified example - adjust based on your actual simulation logic
+  score <- 0
+  
+  # Add points for good financial performance
+  if (!is.null(decisions$financial) && !is.null(decisions$financial$combined_ratio)) {
+    # Lower combined ratio is better
+    if (decisions$financial$combined_ratio < 95) {
+      score <- score + 50
+    } else if (decisions$financial$combined_ratio < 100) {
+      score <- score + 25
+    }
+  }
+  
+  # Add points for market share growth
+  if (!is.null(decisions$market) && !is.null(decisions$market$share_change)) {
+    if (decisions$market$share_change > 0.5) {
+      score <- score + 50
+    } else if (decisions$market$share_change > 0) {
+      score <- score + 25
+    }
+  }
+  
+  # Add points for investment returns
+  if (!is.null(decisions$financial) && !is.null(decisions$financial$investment_return)) {
+    if (decisions$financial$investment_return > 8) {
+      score <- score + 50
+    } else if (decisions$financial$investment_return > 5) {
+      score <- score + 25
+    }
+  }
+  
+  return(score)
 } 

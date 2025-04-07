@@ -402,4 +402,140 @@ initialize_new_game <- function() {
   result <- save_game_state(game_state, 0)
   
   return(result)
+}
+
+# Save player skills to the data store
+save_player_skills <- function(player_id, skills) {
+  # Create data directory if it doesn't exist
+  if (!dir.exists("data/skills")) {
+    dir.create("data/skills", recursive = TRUE)
+  }
+  
+  # Define the file path
+  file_path <- paste0("data/skills/", player_id, "_skills.rds")
+  
+  # Save skills as RDS file
+  saveRDS(skills, file = file_path)
+  
+  return(TRUE)
+}
+
+# Load player skills from the data store
+load_player_skills <- function(player_id) {
+  # Define the file path
+  file_path <- paste0("data/skills/", player_id, "_skills.rds")
+  
+  # Check if skills file exists
+  if (file.exists(file_path)) {
+    skills <- readRDS(file_path)
+    return(skills)
+  } else {
+    # Return default skills if no saved data
+    return(list(
+      availablePoints = 3,  # Start with 3 skill points
+      managementEfficiency = 0,
+      managementLeadership = 0,
+      managementRegulation = 0,
+      actuarialScience = 0,
+      riskAnalysis = 0,
+      investmentStrategy = 0,
+      productInnovation = 0,
+      dataAnalytics = 0,
+      digitalTransformation = 0
+    ))
+  }
+}
+
+# Award skill points to a player
+award_skill_points <- function(player_id, points_to_award) {
+  # Load current skills
+  skills <- load_player_skills(player_id)
+  
+  # Add points
+  skills$availablePoints <- skills$availablePoints + points_to_award
+  
+  # Save updated skills
+  save_player_skills(player_id, skills)
+  
+  return(skills)
+}
+
+# Apply skill effects to simulation parameters
+apply_skill_effects <- function(params, skills) {
+  # Management skills effects
+  if (!is.null(skills$managementEfficiency)) {
+    params$operational_cost_multiplier <- params$operational_cost_multiplier * (1 - (skills$managementEfficiency * 0.02))
+  }
+  
+  if (!is.null(skills$managementLeadership)) {
+    params$productivity_multiplier <- params$productivity_multiplier * (1 + (skills$managementLeadership * 0.03))
+  }
+  
+  if (!is.null(skills$managementRegulation)) {
+    params$compliance_cost_multiplier <- params$compliance_cost_multiplier * (1 - (skills$managementRegulation * 0.05))
+  }
+  
+  # Technical skills effects
+  if (!is.null(skills$actuarialScience)) {
+    params$pricing_accuracy_multiplier <- params$pricing_accuracy_multiplier * (1 + (skills$actuarialScience * 0.04))
+  }
+  
+  if (!is.null(skills$riskAnalysis)) {
+    params$loss_ratio_multiplier <- params$loss_ratio_multiplier * (1 - (skills$riskAnalysis * 0.03))
+  }
+  
+  if (!is.null(skills$investmentStrategy)) {
+    params$investment_return_multiplier <- params$investment_return_multiplier * (1 + (skills$investmentStrategy * 0.005))
+  }
+  
+  # Innovation skills effects
+  # These primarily unlock features rather than modify parameters
+  
+  if (!is.null(skills$dataAnalytics)) {
+    params$decision_accuracy_multiplier <- params$decision_accuracy_multiplier * (1 + (skills$dataAnalytics * 0.02))
+  }
+  
+  if (!is.null(skills$digitalTransformation)) {
+    params$operational_cost_multiplier <- params$operational_cost_multiplier * (1 - (skills$digitalTransformation * 0.01))
+    params$customer_satisfaction_multiplier <- params$customer_satisfaction_multiplier * (1 + (skills$digitalTransformation * 0.02))
+  }
+  
+  return(params)
+}
+
+# Function to check if specific features are unlocked based on skill levels
+check_unlocked_features <- function(skills) {
+  unlocked_features <- list()
+  
+  # Product Innovation unlocks
+  if (!is.null(skills$productInnovation)) {
+    if (skills$productInnovation >= 2) {
+      unlocked_features$basic_product_customization <- TRUE
+    }
+    
+    if (skills$productInnovation >= 3) {
+      unlocked_features$multi_line_bundling <- TRUE
+    }
+    
+    if (skills$productInnovation >= 5) {
+      unlocked_features$premium_products <- TRUE
+    }
+  }
+  
+  # Data Analytics unlocks
+  if (!is.null(skills$dataAnalytics)) {
+    if (skills$dataAnalytics >= 1) {
+      unlocked_features$basic_analytics <- TRUE
+    }
+    
+    if (skills$dataAnalytics >= 3) {
+      unlocked_features$predictive_models <- TRUE
+    }
+    
+    if (skills$dataAnalytics >= 5) {
+      unlocked_features$ai_analytics <- TRUE
+    }
+  }
+  
+  return(unlocked_features)
 } 

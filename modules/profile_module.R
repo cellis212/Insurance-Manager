@@ -508,6 +508,9 @@ profileServer <- function(id, userProfile) {
         userProfile$initialized <- TRUE
         userProfile$player_id <- profile_data$player_id
         
+        # Initialize skills for new user
+        userProfile$skills <- load_player_skills(userProfile$player_id)
+        
         # Return TRUE to indicate success
         return(TRUE)
       } else {
